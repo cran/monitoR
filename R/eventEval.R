@@ -125,12 +125,19 @@ eventEval<-function(
 	    rows<-as.list(1:nRows)
 	    outcome<-unlist(lapply(rows,function(x) {
 	        vect<-NULL
+	        # The undetected events
 		    if(all(manual[x],!same1above[x],!same1below[x])) {vect[x]<-"FALSE -"
+		    # Detected events from the standard
 		    } else if(manual[x] && any(all(same1above[x],!manual.above[x]),all(same1below[x],!manual.below[x]))) {vect[x]<-NA
+		    # Detected but don't exceed score cutoff
 		    } else if(!manual[x] && any(all(same1above[x],manual.above[x]),all(same1below[x],manual.below[x])) && detections[x,sc.fld]<score.cutoff) {vect[x]<-"FALSE -"
+		    # Detected, exceed score cutoff
 		    } else if(!manual[x] && any(all(same1above[x],manual.above[x]),all(same1below[x],manual.below[x])) && detections[x,sc.fld]>=score.cutoff) {vect[x]<-"TRUE +"
+		    # Detection exceeding score cutoff not in standard
 		    } else if(all(!manual[x],!same1above[x],!same1below[x]) && detections[x,sc.fld]>=score.cutoff) {vect[x]<-"FALSE +"
+		    # Detection not exceeding score cutoff & not in standard
 		    } else if(all(!manual[x],!same1above[x],!same1below[x]) && detections[x,sc.fld]<score.cutoff) {vect[x]<-"TRUE -"
+		    # If above was changed to all(!manual[x],!manual[x-1],!manual[x+1]) would the rest be necessary?
 		    } else if(!manual[x] && same1above[x] && !manual.above[x]) {vect[x]<-"TRUE -"
 		    } else if(!manual[x] && same1below[x] && !manual.below[x]) {vect[x]<-"TRUE -"
 		    } else vect[x]<-NA

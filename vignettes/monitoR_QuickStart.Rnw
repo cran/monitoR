@@ -13,9 +13,18 @@
 \setcitestyle{round}
 
 \title{A short introduction to acoustic template matching with \texttt{monitoR}}
-\author{Sasha D. Hafner (\texttt{sdh11@cornell.edu}) and Jonathan Katz (\texttt{jonkatz4@gmail.com})}
+\author{Sasha D. Hafner \\
+\small{University of Southern Denmark, Odense, Denmark (\texttt{saha@kbm.sdu.dk, sdh11@cornell.edu})}
+\vspace{3mm}\\
+and
+\vspace{3mm}\\
+Jonathan Katz \\
+\small{Vermont Cooperative Fish and Wildlife Research Unit, University of Vermont, USA (\texttt{jonkatz4@gmail.com})}
+}
+
 \begin{document}
 \maketitle
+
 
 <<setup,include=FALSE,cache=FALSE>>=
 options(useFancyQuotes=FALSE)
@@ -35,6 +44,9 @@ library(monitoR)
 @
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Disclaimer}
+``Although this software program has been used by the U.S. Geological Survey (USGS), no warranty, expressed or implied, is made by the USGS or the U.S. Government as to the accuracy and functioning of the program and related program material nor shall the fact of distribution constitute any such warranty, and no responsibility is assumed by the USGS in connection therewith.''
+
 \section{Getting started}
 \label{sec:example1}
 
@@ -464,4 +476,8 @@ It can be used interactively to view different parts of a spectrogram, or even a
 \item The \texttt{compareTemplates} function can be used to compare the performance of multiple templates and evaluate similarity between templates.
 \item An alternative to writing \texttt{templateLists} and \texttt{detectionLists} locally is to store templates, survey metadata, and detection results in a MySQL database. MonitoR has a variety of MySQL queries using package \texttt{RODBC} to push and pull data to an acoustics database: uploads are accomplished with \texttt{dbUploadSurvey}, \texttt{dbUploadResult}, and \texttt{dbUploadTemplate}.  Templates can be downloaded to \texttt{templateList} objects with \texttt{dbDownloadTemplate}, and results can be downloaded to \texttt{detectionList} objects with \texttt{dbDownloadResult}.  Survey metadata and media card/recorder metadata are downloaded with \texttt{dbDownloadSurvey} and \texttt{dbDownloadCardRecorderID}.  An acoustics database schema is available for download at the \href{http://www.uvm.edu/rsenr/vtcfwru/R/?Page=monitoR/monitoR.htm}{monitoR website}, which can be loaded on an active database instance using \texttt{dbSchema} or incorporated into an existing MySQL database.
 \end{itemize}
+
+\section*{Acknowledgements}
+Generous funding for this work was provided by the National Park Service, the U.S. Geological Survey, and the National Phenology Network.
+
 \end{document}

@@ -1,9 +1,26 @@
 monitoR
 
-2014 MARCH 28 Sasha Hafner (sdh11@cornell.edu)
-Version 1.1
+2014 MAY 15 Sasha Hafner (sdh11@cornell.edu) and Jon Katz
+Version 1.0.2
 
-* class.R Replaced all slots=c() arguments in setClass calls with representation=representation() to make package compatible with R-oldrelease (R-2.15.3). Users should expect that this will be changed back to slots are some time in the future.
+* monitoR-package.Rd Added disclaimer, funding acknowledgement, and made 
+small corrections.
+
+* monitoR_QuickStart.Rnw Added disclaimer and funding acknowledgement.
+
+* Methods-plot.R and showPeaks.R Changed how ask argument is used for plot 
+methods for templateScores and TemplateList objects, and also for showPeaks
+function, to make sure ask par is set back to the initial value. Also now
+the ask par is not changed to the value of the ask argument until after the 
+first plot has been produced.
+
+2014 MARCH 28 Sasha Hafner (sdh11@cornell.edu)
+Version 1.0.1
+
+* Classes.R Replaced all slots=c() arguments in setClass calls with 
+representation=representation() to make package compatible with R-oldrelease 
+(R-2.15.3). Users should expect that this will be changed back to slots 
+sometime in the future.
 
 * Removed seewave import, and instead added seewave R code for functions stft,
 dBweight, ftwindow, hamming.w, hanning.w, blacktop.w, flattop.w, and

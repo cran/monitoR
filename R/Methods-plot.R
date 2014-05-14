@@ -1,5 +1,5 @@
 # For plotting templates
-# Modified: 2014 MAR 29
+# Modified: 2014 MAY 09
 
 setMethod('plot',signature(x='TemplateList',y='ANY'),
   function(
@@ -14,9 +14,10 @@ setMethod('plot',signature(x='TemplateList',y='ANY'),
     line.col='black'               #
   ) {
   
-    # Set ask and save original value
-    oldask<-par(ask=ask)
-    oldmai<-par(mai=c(1.02,0.82,0.82,0.82))
+    # Set mai and get oldask
+    oldpar<-par(mai=c(1.02,0.82,0.82,0.82))
+    oldask<-par(ask=par('ask'))
+    on.exit(par(c(oldpar,oldask)))
     
     # Template loop
     for(i in which.one) {
@@ -108,15 +109,14 @@ setMethod('plot',signature(x='TemplateList',y='ANY'),
           }
         } 
       }
+      par(ask=ask)
     }
-
-    par(oldask)
-    par(oldmai)
 
     if(click) {
       colnames(click.pts)<-c('t','frq','amp')
       invisible(click.pts)
     }
+
   }
 )
 
@@ -139,101 +139,96 @@ setMethod('plot',signature(x='detectionList',y='ANY'),
   ask=if(dev.list()==2) TRUE else FALSE 
   ) {
 
-  survey<-x@survey
-  t.survey<-length(survey@left)/survey@samp.rate 
-  n.plots<-ceiling(t.survey/t.each)
-  t.start<-1:n.plots*t.each - t.each
-  if(n.plots==1) t.each<-t.survey
-  t.end<-t.start + t.each
-  t.end[t.end>t.survey]<-t.survey
-  t.start[n.plots]<-t.end[n.plots] - t.each # Adjust start of last plot back so it has the same length as the others
+    survey<-x@survey
+    t.survey<-length(survey@left)/survey@samp.rate 
+    n.plots<-ceiling(t.survey/t.each)
+    t.start<-1:n.plots*t.each - t.each
+    if(n.plots==1) t.each<-t.survey
+    t.end<-t.start + t.each
+    t.end[t.end>t.survey]<-t.survey
+    t.start[n.plots]<-t.end[n.plots] - t.each # Adjust start of last plot back so it has the same length as the others
 
-  # Pull out spectrogram data from scores object
-  # Based on first template
-  amp<-x@survey.data[[1]]$amp
-  t.bins<-x@survey.data[[1]]$t.bins
-  frq.bins<-x@survey.data[[1]]$frq.bins
+    # Pull out spectrogram data from scores object
+    # Based on first template
+    amp<-x@survey.data[[1]]$amp
+    t.bins<-x@survey.data[[1]]$t.bins
+    frq.bins<-x@survey.data[[1]]$frq.bins
  
-  # Sort out colors for lines and boxes
-  names.t<-names(x@templates)
-  n.templates<-length(names.t)
-  color<-c(rep(color,n.templates %/% length(color)),color[1:n.templates%%length(color)])
-  names(color)<-names.t
+    # Sort out colors for lines and boxes
+    names.t<-names(x@templates)
+    n.templates<-length(names.t)
+    color<-c(rep(color,n.templates %/% length(color)),color[1:n.templates%%length(color)])
+    names(color)<-names.t
 
-  # Get scorelim
-  if(missing(scorelim)) {
-    upr<-0
-    for(i in seq(length(x@scores))) {
-      upr<-max(upr,x@scores[[i]]$score)
+    # Get scorelim
+    if(missing(scorelim)) {
+      upr<-0
+      for(i in seq(length(x@scores))) {
+        upr<-max(upr,x@scores[[i]]$score)
+      }
+      scorelim<-c(0,upr)
     }
-    scorelim<-c(0,upr)
-  }
 
-  oldpar<-par(mar=c(1,4,1,1),oma=c(6,0,0,0),mfrow=c(2,1))
-  oldask<-par(ask=FALSE)
+    oldpar<-par(mar=c(1,4,1,1),oma=c(6,0,0,0),mfrow=c(2,1))
+    oldask<-par(ask=par('ask'))
+    on.exit(par(c(oldpar,oldask)))
 
-  # Loop through time windows, plotting a spectrogram for each time
-  for(i in 1:length(t.start)) {
-    if(i>1) oldask<-par(ask=ask)
+    # Loop through time windows, plotting a spectrogram for each time
+    for(i in 1:length(t.start)) {
 
-    message(paste(t.start[i],'to',t.end[i],'seconds'))
-  
-    times<-t.bins[t.bins>=t.start[i] & t.bins<=t.end[i]]
-    amp.clip<-amp[,t.bins %in% times]
-    image(x=times,y=frq.bins,t(amp.clip),ylim=flim,col=spec.col,xlab='',ylab='Frequency (kHz)',xaxt='n',las=1)
+      message(paste(t.start[i],'to',t.end[i],'seconds'))
+    
+      times<-t.bins[t.bins>=t.start[i] & t.bins<=t.end[i]]
+      amp.clip<-amp[,t.bins %in% times]
+      image(x=times,y=frq.bins,t(amp.clip),ylim=flim,col=spec.col,xlab='',ylab='Frequency (kHz)',xaxt='n',las=1)
  
-    # Loop through templates and add boxes around detections
-    for(j in which.one) {
-      template<-x@templates[[j]]
-      if(all.peaks) pks<-x@peaks[[j]] else pks<-x@detections[[j]]
-      pks.clip<-pks[pks$time + template@duration >= t.start[i] & pks$time - template@duration <= t.end[i],]
+      # Loop through templates and add boxes around detections
+      for(j in which.one) {
+        template<-x@templates[[j]]
+        if(all.peaks) pks<-x@peaks[[j]] else pks<-x@detections[[j]]
+        pks.clip<-pks[pks$time + template@duration >= t.start[i] & pks$time - template@duration <= t.end[i],]
 
-      if(box & nrow(pks.clip)>0) {
-        for(k in 1:nrow(pks.clip)) { 
-          xleft<-pks.clip$time[k] - template@duration/2
-          xright<-pks.clip$time[k] + template@duration/2
-          ylwr<-template@frq.lim[1]
-          yupr<-template@frq.lim[2]
-          polygon(x=c(xleft,xleft,xright,xright),y=c(ylwr,yupr,yupr,ylwr),border=color[j],lwd=1)
+        if(box & nrow(pks.clip)>0) {
+          for(k in 1:nrow(pks.clip)) { 
+            xleft<-pks.clip$time[k] - template@duration/2
+            xright<-pks.clip$time[k] + template@duration/2
+            ylwr<-template@frq.lim[1]
+            yupr<-template@frq.lim[2]
+            polygon(x=c(xleft,xleft,xright,xright),y=c(ylwr,yupr,yupr,ylwr),border=color[j],lwd=1)
+          }
         }
       }
+
+      # Make plot of scores. Can't sort out xlab for some reason.
+      plot(NULL,xlim=c(t.start[i],t.end[i]),ylim=scorelim,xlab='',ylab='Score',type='n',xaxs='i',las=1,mgp=c(3,1,0))
+      mtext("Time (s or min:sec)",1,2.5,outer=TRUE)
+
+      # Add x axis as mm:ss
+      xaxp.sec<-par('xaxp')
+      labs.sec<-seq(xaxp.sec[1],xaxp.sec[2],length.out=xaxp.sec[3]+1)
+      labs.mmss<-paste(sprintf('%02d',labs.sec%/%60),':',sprintf('%02d',labs.sec%%60),sep='')
+      axis(1,at=labs.sec,labels=labs.mmss,mgp=c(3,1.9,0))
+
+      if(legend) legend('topright',which.one,lty=1,col=color[which.one],cex=0.7)
+
+      # Loop through templates 
+      for(j in which.one) {
+        template<-x@templates[[j]]
+        score<-x@scores[[j]]         # score output from sccDetect. The correlation coefficients within which hits were found.
+        if(all.peaks) pks<-x@peaks[[j]] else pks<-x@detections[[j]]
+        cutoff<-template@score.cutoff      # If given, will plot a horizontal line at the correlation coefficient cutoff.
+
+        score.clip<-score[score$time>=t.start[i] & score$time<=t.end[i],]
+        pks.clip<-pks[pks$time + template@duration >= t.start[i] & pks$time - template@duration <= t.end[i],]
+
+        lines(score.clip$time,score.clip$score,col=color[j])
+        if(hit.marker=='points') points(pks.clip$time,pks.clip$score,col=color[j]) else
+          if(hit.marker=='lines') abline(v=pks.clip$time,col=color[j]) 
+        if(is.vector(cutoff)) abline(h=cutoff,lty=2,col=color[j])
+      }
+      par(ask=ask)
     }
-
-    # Make plot of scores. Can't sort out xlab for some reason.
-    plot(NULL,xlim=c(t.start[i],t.end[i]),ylim=scorelim,xlab='',ylab='Score',type='n',xaxs='i',las=1,mgp=c(3,1,0))
-    mtext("Time (s or min:sec)",1,2.5,outer=TRUE)
-
-    # Add x axis as mm:ss
-    xaxp.sec<-par('xaxp')
-    labs.sec<-seq(xaxp.sec[1],xaxp.sec[2],length.out=xaxp.sec[3]+1)
-    labs.mmss<-paste(sprintf('%02d',labs.sec%/%60),':',sprintf('%02d',labs.sec%%60),sep='')
-    axis(1,at=labs.sec,labels=labs.mmss,mgp=c(3,1.9,0))
-
-    if(legend) legend('topright',which.one,lty=1,col=color[which.one],cex=0.7)
-
-    # Loop through templates 
-    for(j in which.one) {
-      template<-x@templates[[j]]
-      score<-x@scores[[j]]         # score output from sccDetect. The correlation coefficients within which hits were found.
-      if(all.peaks) pks<-x@peaks[[j]] else pks<-x@detections[[j]]
-      cutoff<-template@score.cutoff      # If given, will plot a horizontal line at the correlation coefficient cutoff.
-
-      score.clip<-score[score$time>=t.start[i] & score$time<=t.end[i],]
-      pks.clip<-pks[pks$time + template@duration >= t.start[i] & pks$time - template@duration <= t.end[i],]
-
-      lines(score.clip$time,score.clip$score,col=color[j])
-      if(hit.marker=='points') points(pks.clip$time,pks.clip$score,col=color[j]) else
-        if(hit.marker=='lines') abline(v=pks.clip$time,col=color[j]) 
-      if(is.vector(cutoff)) abline(h=cutoff,lty=2,col=color[j])
-    }
-  }
-
-  #par(oldmar)
-  #par(oldoma)
-  #par(oldmfrow)
-  par(oldpar)
-  par(oldask)
-
+  
   }
 )  
 

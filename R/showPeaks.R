@@ -1,4 +1,4 @@
-# Modified: 2013 NOV 30
+# Modified: 2013 MAY 14
 
 showPeaks <-
 function(
@@ -21,6 +21,10 @@ function(
 
    # Check arguments
    if(missing(detection.obj)) stop('Required argument detection.obj missing')
+
+   # ask par
+   oldask<-par(ask=par('ask'))
+   on.exit(par(oldask))
 
    # Pull out data for plots
    template<-detection.obj@templates[[which.one]]
@@ -134,13 +138,12 @@ function(
          }
          if(is.na(x) || x!='r') verC[i]<-x
       }
-      if(length(id)>0) oldask<-par(ask=ask)
+      par(ask=ask)
       if(!is.na(x) && x=='r') i<-i-1 else i<-i+1
       if(i<1) i<-1
    }
 
    cat("\n")
-   par(ask=oldask)
    if(verify) {
       slot(detection.obj,what)[[which.one]]$true<-NA
       slot(detection.obj,what)[[which.one]]$true[id]<-verC=='y'

@@ -87,7 +87,7 @@ data(btnw)
 data(survey)
 
 # Use a Wave object directly to make a binary point template
-wbt1<-makeBinTemplate("btnw.wav",frq.lim=c(3.5,6.5),name="w1",amp.cutoff=-25)
+wbt1<-makeBinTemplate(btnw,frq.lim=c(3.5,6.5),name="w1",amp.cutoff=-25)
 
 # Calculate scores
 bscores<-binMatch(survey=survey,templates=wbt1,time.source='fileinfo')

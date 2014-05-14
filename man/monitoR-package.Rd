@@ -11,10 +11,11 @@
     \tabular{ll}{
         Package: \tab monitoR\cr
         Type: \tab Package\cr
-        Version: \tab 1.0\cr
-        Date: \tab 2013-05-22\cr
+        Version: \tab 1.0.2\cr
+        Date: \tab 2014-05-14\cr
         License: \tab GPL version 2\cr
-        Depends: \tab tuneR, plyr, RODBC\cr
+        Depends: \tab tuneR\cr
+        Suggests: \tab fftw, parallel, RODBC, knitr\cr
         Contributors : \tab Therese Donovan\cr
         Webpage: \tab http://www.uvm.edu/rsenr/vtcfwru/R/?Page=monitoR/monitoR.htm  \cr
 %~~        Discussion group: \tab \cr  ~~
@@ -22,6 +23,9 @@
     }
 Acknowledgments: A Fourier transformed is used in the \pkg{monitoR} package to transform time-domain acoustic data to frequency-domain data (i.e., the data displayed in the spectrograms used to produce templates). The \code{spectro} function used in our package is essentially a pared-down version of a function of the same name in Jerome Sueur's excellent package \pkg{seewave}. To use \code{spectro}, the \pkg{seewave} functions \code{dBweight}, \code{ftwindow}, \code{hamming.w} and other window functions, and \code{stft} are imported from \pkg{seewave}. The function \code{\link{readMP3}} is modified from Uwe Ligges' package \pkg{tuneR}. And several other \pkg{tuneR} functions are used directly from the \pkg{tuneR} package. Without \pkg{seewave} and \pkg{tuneR} this project would have gotten off to a much slower start.   
 
+Generous funding for this work was provided by the National Park Service, the U.S. Geological Survey, and the National Phenology Network.
+
+Disclaimer: ``Although this software program has been used by the U.S. Geological Survey (USGS), no warranty, expressed or implied, is made by the USGS or the U.S. Government as to the accuracy and functioning of the program and related program material nor shall the fact of distribution constitute any such warranty, and no responsibility is assumed by the USGS in connection therewith.''
 
 Functions in monitoR:
 
@@ -62,7 +66,7 @@ data(btnw)
 # Use a Wave object directly to make a correlation template
 wct1<-makeCorTemplate(btnw,frq.lim=c(3.5,6.5),name="w1")
 # And a binary point template
-wbt1<-makeBinTemplate("btnw.wav",frq.lim=c(3.5,6.5),name="w1",amp.cutoff=-25)
+wbt1<-makeBinTemplate(btnw,frq.lim=c(3.5,6.5),name="w1",amp.cutoff=-25)
 
 # Calculate scores
 cscores<-corMatch(survey=survey,templates=wct1,time.source="fileinfo")
