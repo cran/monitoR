@@ -1,0 +1,71 @@
+import(methods,tuneR)
+importFrom(seewave,stft,dBweight,ftwindow,hamming.w,hanning.w,blackman.w,flattop.w,rectangle.w,bartlett.w)
+
+export(
+  batchBinMatch,
+  batchCorMatch,
+  binMatch,
+  bindEvents,
+  changeSampRate,
+  collapseClips,
+  combineBinTemplates,
+  combineCorTemplates,
+  compareTemplates,
+  corMatch,
+  cutw,
+  dbDownloadCardRecorderID,
+  dbDownloadResult,
+  dbDownloadSurvey,
+  dbDownloadTemplate,
+  dbSchema,
+  dbUploadAnno,
+  dbUploadResult,
+  dbUploadSurvey,
+  dbUploadTemplate,
+  eventEval,
+  fileCopyRename,
+  findPeaks,
+  getDetections,
+  getPeaks,
+  getTemplates,
+  makeBinTemplate,
+  makeCorTemplate,
+  mp3Subsamp,
+  readBinTemplates,
+  readCorTemplates,
+  readMP3,
+  showPeaks,
+  templateComment,
+  "templateComment<-",
+  templateCutoff,
+  "templateCutoff<-",
+  templateNames,
+  "templateNames<-",
+  timeAlign,
+  viewSpec,
+  writeBinTemplates,
+  writeCorTemplates,
+  gray.1,
+  gray.2,
+  gray.3,
+  rainbow.1,
+  topo.1
+)
+
+exportMethods(
+  "plot",
+  "show",
+  "summary",
+  "[" 
+)
+
+exportClasses(
+  "binTemplate",
+  "binTemplateList",
+  "corTemplate",
+  "corTemplateList",
+  "detectionList",
+  "Template",
+  "TemplateList",
+  "templateScores" 
+)
