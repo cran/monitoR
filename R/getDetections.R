@@ -1,5 +1,5 @@
 # For extracting the detections from a detectionList object
-# Modified: 2014 MAR 19
+# Modified: 2014 MAR 29
 
 getDetections <-
 function(
@@ -8,7 +8,7 @@ function(
    id=NULL,                  # Additional column that should be added to first position in returned data frame
    output='data frame'       # Format of output, 'data frame' or 'list'
 ) {
-#   require(plyr)
+
    # Pull out the template names for adding to output
    hits<-detection.obj@detections
 

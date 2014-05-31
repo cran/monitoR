@@ -1,4 +1,4 @@
-# Modified: 2014 MAR 19
+# Modified: 2014 MAR 29
 
 changeSampRate<-function(
    wchange,                # Wave object, sampling rate will be changed 
@@ -7,8 +7,6 @@ changeSampRate<-function(
    dither=FALSE,           # Dither resampled wave object with gaussian noise
    dith.noise=32           # Std Dev of guassian noise function; 7 bits error (2^7=+/-2sd) adds ~ 6 dB noise
    ) {
-
-#   require(tuneR)
 
    f<-wchange@samp.rate/sr.new
    if(dither) {

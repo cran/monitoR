@@ -1,0 +1,16 @@
+monitoR
+
+2014 MARCH 28 Sasha Hafner (sdh11@cornell.edu)
+Version 1.1
+
+* class.R Replaced all slots=c() arguments in setClass calls with representation=representation() to make package compatible with R-oldrelease (R-2.15.3). Users should expect that this will be changed back to slots are some time in the future.
+
+* Removed seewave import, and instead added seewave R code for functions stft,
+dBweight, ftwindow, hamming.w, hanning.w, blacktop.w, flattop.w, and
+rectangle.w to the package. The only effect for users is that seewave and its
+dependencies are not required for installation of monitoR.
+
+* Updated list of authors to include seewave and tuneR authors.
+
+2014 MARCH 27
+Version 1.0

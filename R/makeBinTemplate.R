@@ -1,5 +1,5 @@
 # For making binary templates
-# Modified: 2014 MAR 19
+# Modified: 2014 MAR 29
 
 makeBinTemplate <-
 function(
@@ -52,9 +52,6 @@ function(
       shift="i"
    }
    if(!select%in%c("cell","click","auto","rectangle","rect")) stop("select argument, ",select,", not recognized")
-
-   # Required package
-#   require(tuneR)
 
    # Creates a wav file for any clip elements that are not already files
    clip<-getClip(clip,name=deparse(substitute(clip)))

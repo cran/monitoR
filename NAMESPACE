@@ -1,5 +1,4 @@
 import(methods,tuneR)
-importFrom(seewave,stft,dBweight,ftwindow,hamming.w,hanning.w,blackman.w,flattop.w,rectangle.w,bartlett.w)
 
 export(
   batchBinMatch,

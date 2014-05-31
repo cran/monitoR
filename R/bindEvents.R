@@ -1,4 +1,4 @@
-# Modified: 2014 MAR 19
+# Modified: 2014 MAR 29
 
 bindEvents <-
 function(
@@ -10,7 +10,6 @@ function(
 ) {
 
    if(parallel) require(parallel)
-#   require(tuneR) # For collapseClips
 
    # Read in the event file
    if(class(file) != "data.frame") events<-read.csv(file=file)

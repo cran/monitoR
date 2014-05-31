@@ -28,7 +28,7 @@ findPeaks(score.obj, fd.rat = 1, frame, parallel = FALSE)
   }
 
   \item{parallel}{
-    Set to \code{TRUE} for parallel processing using \code{mclapply()} from the \code{parallel} package.
+    Set to \code{TRUE} for parallel processing using \code{\link[parallel]{mclapply}}.
     This option is not available for Windows operating systems.
   }
 }

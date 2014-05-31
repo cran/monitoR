@@ -1,7 +1,7 @@
 # Function to read only portions of MP3 files, using mp3splt to locate frames
 # Can lead to a lot of disk writes if used to loop through long spectrogram files!
 # Adapted from tuneR::readMP3 by J. Katz 02 Feb 2013
-# 2014 MAR 19
+# 2014 MAR 29
 
 readMP3<-function (
    filename,                       # Name of full-length MP3 file
@@ -23,7 +23,6 @@ readMP3<-function (
             cat("'mp3splt' not found; use tuneR::readMP3 equivalent? (Y/n)\n")
 			x<-tolower(readLines(n=1))
 			if(x=='y' || x==""){
-#			   require(tuneR) 
                wave<-tuneR::readMP3(filename)
                return(wave)
             } else stop('Download mp3splt at\nhttp://mp3splt.sourceforge.net/mp3splt_page/home.php')

@@ -18,9 +18,8 @@ function(
   if(missing(templates)) stop('Required argument templates is missing.')
 
   # Packages
-#  require(tuneR)
   if(parallel) {
-    require(parallel)
+    require(parallel) # NTS should replace with parallel::mclapply? or drop altogether?
     lapplyfun<-function(X,FUN) mclapply(X,FUN,mc.cores=detectCores()-1)
   } else lapplyfun<-lapply
 

@@ -1,5 +1,5 @@
 # For viewing spectrograms
-# Modified: 2014 MAR 20
+# Modified: 2014 MAR 29
 
 viewSpec <-
 function(
@@ -24,9 +24,6 @@ function(
    main=NULL,                                    # Optional plot title
    ...
 ){
-
-   # Required package
-#   require(tuneR)
 
    # Single recording
    if(class(clip)=='character' & class(clip)!='Wave') { 

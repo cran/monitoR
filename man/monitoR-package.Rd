@@ -29,8 +29,7 @@ Create a MySQL database (\code{\link{dbSchema}}), to which survey metadata, temp
 }
 
 \author{
-Sasha D. Hafner (\email{sdh11@cornell.edu})\cr
-Jon Katz \email{jonkatz4@gmail.com}\cr
+Sasha D. Hafner \email{sdh11@cornell.edu} and Jon Katz \email{jonkatz4@gmail.com}, with code for the Fourier transform from the seewave package (by Jerome Sueur, Thierry Aubin, and Caroline Simonis), and code for the readMP3 function from the tuneR package (by Uwe Ligges).
 
 Maintainer: Sasha D. Hafner \email{sdh11@cornell.edu}
 }
@@ -66,8 +65,8 @@ wct1<-makeCorTemplate(btnw,frq.lim=c(3.5,6.5),name="w1")
 wbt1<-makeBinTemplate("btnw.wav",frq.lim=c(3.5,6.5),name="w1",amp.cutoff=-25)
 
 # Calculate scores
-cscores<-corMatch(survey=survey,templates=wct1,time.source='fileinfo')
-bscores<-binMatch(survey=survey,templates=wbt1,time.source='fileinfo')
+cscores<-corMatch(survey=survey,templates=wct1,time.source="fileinfo")
+bscores<-binMatch(survey=survey,templates=wbt1,time.source="fileinfo")
 
 # Find peaks and detections
 cdetects<-findPeaks(cscores)

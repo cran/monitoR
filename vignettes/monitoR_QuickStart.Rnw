@@ -12,7 +12,7 @@
 \setlength{\parskip}{5pt plus 1pt minus 1pt}
 \setcitestyle{round}
 
-\title{A short introduction to \texttt{monitoR} for acoustic template matching}
+\title{A short introduction to acoustic template matching with \texttt{monitoR}}
 \author{Sasha D. Hafner (\texttt{sdh11@cornell.edu}) and Jonathan Katz (\texttt{jonkatz4@gmail.com})}
 \begin{document}
 \maketitle
@@ -38,8 +38,15 @@ library(monitoR)
 \section{Getting started}
 \label{sec:example1}
 
-The motivation behind the development of the monitoR package was for automated detection and identification of animal vocalizations.
-For example, the package includes a 23 second recording of some songbirds in a Wave object (defined in the \texttt{tuneR} package) named \texttt{survey}.
+The motivation behind the development of the \texttt{monitoR} package was automated detection and identification of animal vocalizations.
+Here, we describe how to use \texttt{monitoR} functions to detect and identify songs from two bird species from a survey recording.
+We'll start by loading the package.
+
+<<eval=FALSE>>=
+library(monitoR)
+@
+
+The \texttt{monitoR} package includes a 23 second recording of songbirds as a Wave object (defined in the \texttt{tuneR} package) named \texttt{survey}.
 
 <<>>=
 data(survey)
@@ -67,7 +74,7 @@ play(survey)
 
 You might be see two different types of songs here.
 The songs around 2, 10, and maybe 22 seconds are from a black-throated green warbler \textit{Setophaga virens}, and there are ovenbird \textit{Seiurus aurocapilla} songs around 6, 9, 15, and 23 seconds.
-In this document, we describe how to use \texttt{monitoR} to detect and identify these songs.
+In the following, we show how \texttt{monitoR} can be used to detect and identify these songs.
 
 The \texttt{monitoR} package also includes short recordings of songs from the same two species in \texttt{survey}: \texttt{btnw}, which contains a single song from a black-throated green warbler, and \texttt{oven} which contains a single song from an ovenbird.
 As with \texttt{survey}, these objects are \texttt{Wave} objects.

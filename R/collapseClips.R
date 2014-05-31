@@ -1,4 +1,4 @@
-# Modified: 2014 MAR 19
+# Modified: 2014 MAR 29
 
 collapseClips <-
 function(
@@ -7,9 +7,6 @@ function(
   end.times,    # The end times of clips (s)
   return.times=FALSE  # Set to TRUE to return the times
 ) {
-
-  # Load packages
-#  require(tuneR)
 
   # If rec isn't already a wave object, but it is character, it is assumed to be a file path and file is read in. 
   rec<-getClip(rec,output="Wave")

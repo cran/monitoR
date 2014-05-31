@@ -1,5 +1,5 @@
 # For calculating scores in spectrogram cross correlation
-# Modified: 2014 MAR 19
+# Modified: 2014 MAR 29
 
 corMatch <-
 function(
@@ -18,7 +18,6 @@ function(
   if(missing(templates)) stop('Required argument templates is missing.')
 
   # Packages
-#  require(tuneR)
   if(parallel) {
     require(parallel)
     lapplyfun<-function(X,FUN) mclapply(X,FUN,mc.cores=detectCores())

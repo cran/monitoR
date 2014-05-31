@@ -1,4 +1,4 @@
-# Modified: 2014 MAR 19
+# Modified: 2014 MAR 29
 
 fileCopyRename <-
 function(
@@ -28,8 +28,6 @@ function(
    # Determine whether to use full survey names
    if(full.survey.names) fpath<-paste0(to,'/')
    else fpath<-""
-   # Load packages
-#   require(tuneR)
 
    if(metadata.only){
          if(missing(files)){ # if moving a whole directory

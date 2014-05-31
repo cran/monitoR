@@ -1,5 +1,5 @@
 # For making correlation templates
-# Modified: 2014 MAR 19
+# Modified: 2014 MAR 29
 
 makeCorTemplate <-
 function(
@@ -19,12 +19,8 @@ function(
    ...
 ){
 
-   # Required package
-#   require(tuneR)
-
    # Creates a wav file for clip if it isn't already a file
    clip<-getClip(clip,name=deparse(substitute(clip)))
-
    clip.path<-clip
    clip<-readClip(clip)
 

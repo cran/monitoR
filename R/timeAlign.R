@@ -1,14 +1,13 @@
 # Function to condense detections or peaks from a number of templates (of the same species and detection type); events that occur within an adjustable time buffer of one another are considered to be duplicated.  In such cases only the event that had the highest score is saved.  The buffer is only useful when the signal is centered in the template!  (could include a centering function for accuracy)  Input is an object of class'detectionList', a single data frame, or list of either file paths or data frames.  Returns a single data frame.  Must be done separately for each survey.
 
 # Written 2013 Mar 29
+# Modified 2014 MAR 29
 
 timeAlign<-function(
   x,                 # Object of class'detectionList', single data frame with results from multiple templates, list of file paths or data frames with results from one or more templates.
   what='detections', # If an detection list is provided, should detections or peaks be used?
   tol=1              # Alignment checks to see if the surrounding events are within 0.5 * this value, in seconds 
   ) {  
-
-#    require(plyr)
 
     # cut the tolerance value in half to produce a +/- time buffer
     tol<-0.5*tol

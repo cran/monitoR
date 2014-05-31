@@ -1,6 +1,7 @@
 # Function to subsample recordings for shorter surveys, e.g. 10 minutes from the top of every hour
 # Requires mp3splt, libmp3splt to be installed separately
 # Written by J. Katz 08-May 2013
+# Modified: 2014 MAR 29
 
 # To install mp3splt on windows you need to download the zip or exe and then add the path to your exe.
 # Search for cmd, then type this into the cmd window--replacing the path below with your actual path.
@@ -24,8 +25,6 @@ mp3Subsamp<-function(
     split=TRUE          # Set to FALSE for metadata only
     ){
     
-#    require(plyr)
-
     if (length(system(command="mp3splt -h",intern=TRUE))<10) stop("'mp3splt' not found; download mp3splt at\nhttp://mp3splt.sourceforge.net/mp3splt_page/home.php\n")
 
     if(missing(csv.name)) csv.name<-paste(loc.prefix,'_',as.character(Sys.time(),format='%Y-%m-%d'),'.csv',sep='')

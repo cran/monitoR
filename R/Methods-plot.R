@@ -1,5 +1,5 @@
 # For plotting templates
-# Modified: 2014 MAR 19
+# Modified: 2014 MAR 29
 
 setMethod('plot',signature(x='TemplateList',y='ANY'),
   function(
@@ -13,9 +13,6 @@ setMethod('plot',signature(x='TemplateList',y='ANY'),
     pt.col='#FFA50075',            # Color for correlation template points
     line.col='black'               #
   ) {
-  
-    # Load tuneR for reading wav file
-#    require(tuneR)
   
     # Set ask and save original value
     oldask<-par(ask=ask)

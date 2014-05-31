@@ -37,7 +37,7 @@ time.source="filename",report.amp=FALSE,...)
 %  }
 
   \item{parallel}{
-    If \code{TRUE}, \code{mclapply()} from the \code{parallel} package is used for calculation of scores across all time bins for each template.
+    If \code{TRUE}, \code{\link[parallel]{mclapply}} is used for calculation of scores across all time bins for each template.
     This option is not available for Windows operating systems.
   }
 
@@ -46,7 +46,7 @@ time.source="filename",report.amp=FALSE,...)
   }
 
   \item{cor.method}{
-    For \code{corMatch()}, the method used to calculate correlation coefficients (see \code{cor()}).
+    For \code{corMatch}, the method used to calculate correlation coefficients (see \code{?cor}).
   }
 
   \item{warn}{
@@ -60,11 +60,11 @@ time.source="filename",report.amp=FALSE,...)
   }
 
   \item{report.amp}{
-    If \code{TRUE}, \code{binMatch()} will return the mean ``on'' and ``off'' amplitudes as well as their difference (the score). See details.
+    If \code{TRUE}, \code{binMatch} will return the mean ``on'' and ``off'' amplitudes as well as their difference (the score). See details.
   }
 
   \item{\dots}{
-    Additional arguments to the \code{spectro()} function.
+    Additional arguments to the \code{spectro} function.
   }
 }
 
