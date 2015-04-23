@@ -15,7 +15,8 @@ showPeaks(detection.obj, which.one = names(detection.obj@templates)[1], fd.rat =
 frame = fd.rat * detection.obj@templates[[which.one]]@duration, id = 1:nrow(pks), 
 t.lim, flim = c(0, 20), point = TRUE, ask = if (verify) FALSE else TRUE, 
 scorelim = NULL, verify = FALSE, what = "detections", box = TRUE, 
-player = "play", spec.col = gray.3())
+player = "play", spec.col = gray.3(), on.col='#FFA50075', off.col='#0000FF75', 
+pt.col='#FFA50075')
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -56,7 +57,7 @@ player = "play", spec.col = gray.3())
     Should all peaks (\code{what="peaks"}) or just detections (\code{what="detections"}) be shown?
 }
   \item{box}{
-    If \code{TRUE} plot a box around detections in the spectrogram. Box boundaries are based on template duration and frequency limits.
+    If \code{TRUE} plot a box around detections in the spectrogram. Box boundaries are based on template duration and frequency limits. Can also be set to "template" to see the template points plotted over the detection.
 }
   \item{player}{
     If \code{verify=TRUE}, the user will have the option to play the detection or peak. This argument is the command used for starting the player. See Details.
@@ -64,11 +65,19 @@ player = "play", spec.col = gray.3())
   \item{spec.col}{
     A vector of colors for the spectrogram.
 }
+  \item{on.col}{
+    Colors for the on points of a binary point template, if \code{box="template"}. Default is #RRGGBBAA, where AA is the transparency.
+}
+  \item{off.col}{
+    Colors for the off points of a binary point template, if \code{box="template"}. Default is #RRGGBBAA, where AA is the transparency.
+}
+  \item{pt.col}{
+    Colors for the points of a correlation template, if \code{box="template"}. Default is #RRGGBBAA, where AA is the transparency.
+}
 }
 \details{
 Note that almost all of the arguments have a default value.\cr
-The default audio player, "wv_player.exe", is a free third-party multi-OS media player available for download from CNET: http://download.cnet.com/WV-Player-formerly-Wav-Player/3000-2139_4-10472299.html\cr
-Sox is another multi-OS media player invoked with ("play").  An option that may already be installed on Windows is Windows Media Player ("wmplayer.exe"); on Ubuntu try Rhythmbox ("rhythmbox"), and on Mac OS try afplay ("afplay").    
+The default audio player, "play", is the shell command for SoX, the multi-OS media player. Windows will detect the file type and use the default media player with "start". Use the Windows syntax: START [/D path], e.g. \code{player="start /D <working_directory>"}. On Ubuntu try Rhythmbox ("rhythmbox"), and on Mac OS try afplay ("afplay").        
 }
 \value{
 \code{NULL}, invisibly, or, if \code{verify=TRUE}, an updated detection list object (\code{\linkS4class{detectionList}}).
@@ -82,26 +91,42 @@ Sasha D. Hafner
   \code{\link{plot-methods}}
 }
 \examples{
-# Load example Wave object: template and survey
+# Load data
 data(btnw)
+data(oven)
 data(survey)
 
-# Use a Wave object directly to make a binary point template
-wbt1<-makeBinTemplate(btnw,frq.lim=c(3.5,6.5),name="w1",amp.cutoff=-25)
+# Write Wave objects to file (temporary directory used here)
+btnw.fp<-file.path(tempdir(),"btnw.wav")
+oven.fp<-file.path(tempdir(),"oven.wav")
+survey.fp<-file.path(tempdir(),"survey2010-12-31_120000_EST.wav")
+writeWave(btnw, btnw.fp)
+writeWave(oven, oven.fp)
+writeWave(survey, survey.fp)
+
+# Correlation example
+# Create two correlation templates
+wct<-makeCorTemplate(btnw.fp, t.lim=c(1.5, 2.1), frq.lim=c(4.2, 5.6), name="w")
+oct<-makeCorTemplate(oven.fp, t.lim=c(1, 4), frq.lim=c(1, 11), dens=0.1, name="o")
+
+# Combine them
+ctemps<-combineCorTemplates(wct, oct)
 
 # Calculate scores
-bscores<-binMatch(survey=survey,templates=wbt1,time.source='fileinfo')
+cscores<-corMatch(survey.fp, ctemps)
 
 # Find peaks and detections
-bdetects<-findPeaks(bscores)
+cdetects<-findPeaks(cscores)
+cdetects
 
-\dontrun{
 # Interactively inspect individual detections, no return value
-showPeaks(detection.obj=bdetects, which.one="w1", flim = c(2,8), point=TRUE, scorelim=c(0,40))
+\dontrun{
+# Not run because user input is required
+showPeaks(detection.obj=cdetects, which.one="w1", flim = c(2, 8), point=TRUE, scorelim=c(0, 40))
 
 # Interactively verify individual detections, return adds verification field
-bdetects<-showPeaks(detection.obj=bdetects, which.one="w1", flim = c(0, 20), 
-point = TRUE, scorelim = c(0,40), verify = TRUE)
+bdetects<-showPeaks(detection.obj=cdetects, which.one="w1", flim = c(0, 20), 
+                   point = TRUE, scorelim = c(0, 40), verify = TRUE)
 }
 
 }

@@ -8,16 +8,15 @@ dbUploadSurvey<-function(
     survey.meta,		               # Survey metadata to upload to database
     update.query=FALSE,                # FALSE -> INSERT INTO query, TRUE -> UPDATE-WHERE query
     tz,                                 # Time zone, if not specified in file name or metadata
-    ...									# Additional arguments to odbcConnect
+    ...									# Additional arguments to RODBC::odbcConnect
     ){
     
     start.time<-Sys.time()
-    
-    require (RODBC)
+  
     # open the database connection
-    if(missing(uid) && missing(pwd)) {dbCon<-odbcConnect(db.name,...)
-    } else if(missing(uid)) {dbCon<-odbcConnect(db.name,pwd,...)
-    } else dbCon<-odbcConnect(db.name,uid,pwd,...)
+    if(missing(uid) && missing(pwd)) {dbCon<-RODBC::odbcConnect(db.name,...)
+    } else if(missing(uid)) {dbCon<-RODBC::odbcConnect(db.name,pwd,...)
+    } else dbCon<-RODBC::odbcConnect(db.name,uid,pwd,...)
     # Establish a cleanup procedure
     on.exit(close(dbCon))
     
@@ -55,8 +54,8 @@ dbUploadSurvey<-function(
     }
     
     # push the query through the open connection to the database    
-    if(update.query) {status<-lapply(X=query,FUN=sqlQuery,channel=dbCon)
-    } else {status<-sqlQuery(dbCon,query)}
+    if(update.query) {status<-lapply(X=query,FUN=RODBC::sqlQuery,channel=dbCon)
+    } else {status<-RODBC::sqlQuery(dbCon,query)}
     
     # report to user
     message(if(is.na(status[1])) {paste('Done! Upload time:',round(Sys.time()-start.time,2),'seconds')

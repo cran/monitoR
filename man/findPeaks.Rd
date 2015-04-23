@@ -67,42 +67,49 @@ An S4 object of class \code{templateScores}, with the following slots:
 }
 
 \examples{
-# First create files to work with 
+# Load data
 data(btnw)
 data(oven)
 data(survey)
-writeWave(btnw,"btnw.wav")
-writeWave(oven,"oven.wav")
-writeWave(survey,"survey2010-12-31_120000_EST.wav")
+
+# Write Wave objects to file (temporary directory used here)
+btnw.fp<-file.path(tempdir(),"btnw.wav")
+oven.fp<-file.path(tempdir(),"oven.wav")
+survey.fp<-file.path(tempdir(),"survey2010-12-31_120000_EST.wav")
+writeWave(btnw, btnw.fp)
+writeWave(oven, oven.fp)
+writeWave(survey, survey.fp)
 
 # Correlation example
 # Create two correlation templates
-wct<-makeCorTemplate("btnw.wav",t.lim=c(1.5,2.1),frq.lim=c(4.2,5.6),name="w")
-oct<-makeCorTemplate("oven.wav",t.lim=c(1,4),frq.lim=c(1,11),dens=0.1,name="o")
+wct<-makeCorTemplate(btnw.fp, t.lim=c(1.5, 2.1), frq.lim=c(4.2, 5.6), name="w")
+oct<-makeCorTemplate(oven.fp, t.lim=c(1, 4), frq.lim=c(1, 11), dens=0.1, name="o")
 
-# Combine all of them
-ctemps<-combineCorTemplates(wct,oct)
+# Combine them
+ctemps<-combineCorTemplates(wct, oct)
 
 # Calculate scores
-cscores<-corMatch("survey2010-12-31_120000_EST.wav",ctemps)
+cscores<-corMatch(survey.fp, ctemps)
 
 # Finally, find peaks and detections
 cdetects<-findPeaks(cscores)
 cdetects
 plot(cdetects)
 
-\dontrun{
 # Binary example
+\dontrun{
+# Not run because of the time required (maybe 2-5 seconds)
 # Create two templates
-wbt<-makeBinTemplate("btnw.wav",amp.cutoff=-30,t.lim=c(1.5,2.1),frq.lim=c(4.2,5.6),
-buffer=2,name="w")
-obt<-makeBinTemplate("oven.wav",amp.cutoff=-20,t.lim=c(1,4),frq.lim=c(1,11),name="o")
+wbt<-makeBinTemplate(btnw.fp, amp.cutoff=-30, t.lim=c(1.5, 2.1), frq.lim=c(4.2, 5.6),
+                     buffer=2, name="w")
+obt<-makeBinTemplate(oven.fp, amp.cutoff=-20, t.lim=c(1, 4), frq.lim=c(1, 11), 
+		     name="o")
 
-# Combine all of them
-btemps<-combineBinTemplates(wbt,obt)
+# Combine them
+btemps<-combineBinTemplates(wbt, obt)
 
 # Calculate scores
-bscores<-binMatch("survey2010-12-31_120000_EST.wav",btemps)
+bscores<-binMatch(survey.fp, btemps)
 
 # Finally, find peaks and detections
 bdetects<-findPeaks(bscores)
@@ -110,6 +117,10 @@ bdetects
 plot(bdetects)
 }
 
+# Clean up (only because these files were created in these examples)
+file.remove(btnw.fp)
+file.remove(oven.fp)
+file.remove(survey.fp)
 }
 
 % Add one or more standard keywords, see file 'KEYWORDS' in the

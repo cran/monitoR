@@ -11,11 +11,11 @@ These functions are used to calculate spectrogram template matching scores betwe
 }
 
 \usage{
-corMatch(survey,templates,parallel=FALSE,show.prog=FALSE,cor.method="pearson",
-warn=TRUE,time.source="filename",...)
+corMatch(survey, templates, parallel=FALSE, show.prog=FALSE, cor.method="pearson",
+warn=TRUE, time.source="filename", write.wav=FALSE,...)
 
-binMatch(survey,templates,parallel=FALSE,show.prog=FALSE,warn=TRUE,
-time.source="filename",report.amp=FALSE,...)
+binMatch(survey, templates, parallel=FALSE, show.prog=FALSE, warn=TRUE,
+time.source="filename", write.wav=FALSE, report.amp=FALSE, ...)
 
 }
 
@@ -57,6 +57,10 @@ time.source="filename",report.amp=FALSE,...)
     The source of date and time information.
     \code{filename} will look in the name of the survey file (\code{survey} argument) for a date and time with format YYYY-MM-DD_HHMMSS_TimeZone.
     \code{"fileinfo"} will take the date and time from the file modification information.  See details.
+  }
+
+  \item{write.wav}{
+    If \code{survey} is a \code{Wave} object, should it be written to file? If \code{FALSE}, functions will return an error.
   }
 
   \item{report.amp}{

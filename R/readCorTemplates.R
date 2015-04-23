@@ -1,5 +1,5 @@
 # For reading in one or more correlation template files and creating a template list
-# Modified: 2013 JULY 12
+# Modified: 2015 APR 2
 
 readCorTemplates <-
 function(
@@ -11,8 +11,7 @@ function(
 
    # Select lapplyfun
    if(parallel) {
-      require(parallel)
-      lapplyfun<-function(X,FUN) mclapply(X,FUN,mc.cores=detectCores())
+      lapplyfun<-function(X,FUN) parallel::mclapply(X,FUN,mc.cores=parallel::detectCores())
    } else lapplyfun<-lapply
 
    # If needed, determine files

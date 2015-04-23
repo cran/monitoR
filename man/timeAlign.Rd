@@ -13,7 +13,7 @@ timeAlign(x, what = "detections", tol = 1)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{An object of class \code{\linkS4class{detectionList}}, a single data frame of detections, or list of either file paths to a csv file or of data frames.}
-  \item{what}{Character, in \code{c("detections","peaks")}.  Detections are peaks above a score cutoff.  Peaks are all peaks.  Required only if \code{x} is of class \code{detectionList}}
+  \item{what}{Character, in \code{c("detections", "peaks")}.  Detections are peaks above a score cutoff.  Peaks are all peaks.  Required only if \code{x} is of class \code{detectionList}}
   \item{tol}{Numeric value for tolerance, with units seconds.  If a detected event is within this value (actually +/- 0.5\code{tol}), the events are assumed to co-occur and be of the same origin.  A somewhat arbitrary value (like epsilon), but should be less than 2/3 the template duration.}
 }
 
@@ -39,19 +39,20 @@ The function \code{\link{eventEval}} operates similarly, but rather than merge d
 
 \examples{
 \dontrun{
+# Not run because it will create files in user's working directory
 data(survey)
 data(btnw)
 
-writeWave(btnw,"btnw.wav")
+writeWave(btnw, "btnw.wav")
 
-btnw2<-cutw(survey,from=0.75,to=3)
+btnw2<-cutw(survey, from=0.75, to=3)
 
-writeWave(btnw2,"btnw2.wav")
+writeWave(btnw2, "btnw2.wav")
 
 # Template construction
 btnw1<-makeBinTemplate(
         "btnw.wav",
-        frq.lim=c(2,8),
+        frq.lim=c(2, 8),
         select="auto",
         name="btnw1",
         buffer=4,
@@ -60,7 +61,7 @@ btnw1<-makeBinTemplate(
 
 btnw2<-makeBinTemplate(
         "btnw2.wav",
-        frq.lim=c(2,8),
+        frq.lim=c(2, 8),
         select="auto",
         name="btnw2",
         buffer=4,
@@ -68,10 +69,10 @@ btnw2<-makeBinTemplate(
         binary=TRUE)
 
 # Join templates
-btnw<-combineBinTemplates(btnw1,btnw2)
+btnw<-combineBinTemplates(btnw1, btnw2)
 
 # Binary point matching
-scores<-binMatch(survey=survey,templates=btnw,time.source='fileinfo')
+scores<-binMatch(survey=survey, templates=btnw, time.source='fileinfo')
 
 # Isolate peaks
 pks<-findPeaks(scores)

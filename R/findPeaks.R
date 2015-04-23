@@ -1,5 +1,5 @@
 # For finding peaks in output from corMatch or binMatch and identifying detections
-# Modified: 2014 MARCH 09
+# Modified: 2015 APR 2
 
 findPeaks<-
 function(
@@ -13,8 +13,7 @@ function(
 
   # Required packages
   if(parallel) {
-    require(parallel)
-    lapplyfun<-function(X,FUN,mc.cores) mclapply(X,FUN,mc.cores=detectCores())
+    lapplyfun<-function(X,FUN,mc.cores) parallel::mclapply(X,FUN,mc.cores=parallel::detectCores())
   } else lapplyfun<-lapply
 
   # Finally start working on peaks. 

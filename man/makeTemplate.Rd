@@ -12,21 +12,22 @@ A template is made by manually or automatically selecting cells within a Fourier
 }
 
 \usage{
-makeCorTemplate(clip,t.lim=NA,frq.lim=c(0,12),select="auto",dens=1,score.cutoff=0.4,
-name="A",comment="",spec.col=gray.3(),sel.col=ifelse(dens==1,"#99009975","orange"),
-wl=512,ovlp=0,wn="hanning",...)
+makeCorTemplate(clip, t.lim=NA, frq.lim=c(0, 12), select="auto", dens=1, score.cutoff=0.4,
+  name="A", comment="", spec.col=gray.3(), sel.col=ifelse(dens==1, "#99009975", "orange"),
+  wl=512, ovlp=0, wn="hanning", write.wav=FALSE, ...)
 
-makeBinTemplate(clip,t.lim=NA,frq.lim=c(0,12),select="auto",binary=TRUE,buffer=0,
-dens=1,score.cutoff=12,name="A",comment="",amp.cutoff="i",shift="i",high.pass=-Inf,
-spec.col=gray.3(),bin.col=c("white","black"),
-quat.col=c("white","gray40","gray75","black"),sel.col=c("orange","blue"),
-legend.bg.col="#2E2E2E94",legend.text.col="black",wl=512,ovlp=0,wn="hanning",...)
+makeBinTemplate(clip, t.lim=NA, frq.lim=c(0, 12), select="auto", binary=TRUE, buffer=0,
+  dens=1, score.cutoff=12, name="A", comment="", amp.cutoff="i", shift="i", 
+  high.pass=-Inf, spec.col=gray.3(), bin.col=c("white", "black"),
+  quat.col=c("white", "gray40", "gray75", "black"), sel.col=c("orange", "blue"),
+  legend.bg.col="#2E2E2E94", legend.text.col="black", wl=512, ovlp=0, wn="hanning",
+  write.wav=FALSE, ...)
 }
 
 \arguments{
 
   \item{clip}{
-    A file path to one wav or mp3 files, or a wav object.
+    A file path to one wav or mp3 file, or a Wave object (but see 'Details' for this case).
     Or, for \code{makeBinTemplate} only, a list or vector of two such objects.
     Character vector or list. 
   }
@@ -138,6 +139,10 @@ legend.bg.col="#2E2E2E94",legend.text.col="black",wl=512,ovlp=0,wn="hanning",...
     The \code{wn} argument sent to the \code{spectro} function.
   }
 
+  \item{write.wav}{
+    If \code{clip} is a \code{Wave} object, should it be written to file? If \code{FALSE}, functions will return an error.
+  }
+
   \item{\dots}{
     Additional arguments to \code{spectro}.
   }
@@ -146,6 +151,7 @@ legend.bg.col="#2E2E2E94",legend.text.col="black",wl=512,ovlp=0,wn="hanning",...
 \details{
 \code{makeCorTemplate} is used for making correlation templates, while \code{makeBinTemplate} is used to make binary point matching templates.
 \code{makeBinTemplate} can be used with one or two recordings (\code{clip} argument).
+If the \code{clip} argument is a \code{Wave} object, the functions will attempt to write the object(s) to a wav file(s) in the working directory, but only if the \code{write.wav} argument is \code{TRUE}. 
 To use templates produced with these functions, see \code{\link{corMatch}} or \code{\link{binMatch}}.
 To combine template lists, see \code{\link{combineCorTemplates}} or \code{\link{combineBinTemplates}}.
 }
@@ -177,55 +183,64 @@ data(btnw)
 data(oven)
 
 # Use a Wave object directly to make a template
-wct1<-makeCorTemplate(btnw,name="w1")
+\dontrun{
+# Not run because it will create a file in user's working directory with write.wav=TRUE
+wct1<-makeCorTemplate(btnw, name="w1", write.wav=TRUE)
 wct1
+}
 
 # For traceability, better to use acoustic files
-# Here, first write Wave objects to file 
-writeWave(btnw,"btnw.wav")
-writeWave(oven,"oven.wav")
+# Here, first write Wave objects to file (temporary directory used here)
+btnw.fp<-file.path(tempdir(),"btnw.wav")
+oven.fp<-file.path(tempdir(),"oven.wav")
+writeWave(btnw, btnw.fp)
+writeWave(oven, oven.fp)
 
 # Use default arguments except for name
-wct1<-makeCorTemplate("btnw.wav",name="w1")
+wct1<-makeCorTemplate(btnw.fp, name="w1")
 
 # Specify time and frequency limits to focus on a smaller area
-wct2<-makeCorTemplate("btnw.wav",t.lim=c(1.5,2.1),frq.lim=c(4.2,5.6),name="w2")
+wct2<-makeCorTemplate(btnw.fp, t.lim=c(1.5, 2.1), frq.lim=c(4.2, 5.6), name="w2")
 
 # For finer control, see options for select argument, e.g.,
 \dontrun{
-wct3<-makeCorTemplate("btnw.wav",select="cell",name="w3")
-wct4<-makeCorTemplate("btnw.wav",select="rectangle",name="w4")
+wct3<-makeCorTemplate(btnw.fp, select="cell", name="w3")
+wct4<-makeCorTemplate(btnw.fp, select="rectangle", name="w4")
 }
 
 # Use a different recording--different species here
-oct1<-makeCorTemplate("oven.wav",name="o1",t.lim=c(1,4),frq.lim=c(1,11))
+oct1<-makeCorTemplate(oven.fp, name="o1", t.lim=c(1, 4), frq.lim=c(1, 11))
 
 # Reduce cell density
-oct2<-makeCorTemplate("oven.wav",name="o2",t.lim=c(1,4),frq.lim=c(1,11),dens=0.1)
+oct2<-makeCorTemplate(oven.fp, name="o2", t.lim=c(1, 4), frq.lim=c(1, 11), dens=0.1)
 
 # Binary templates are similar
 # By default, amplitude cutoff is interactively set
 \dontrun{
-wbt1<-makeBinTemplate("btnw.wav",name="w1")
+wbt1<-makeBinTemplate(btnw.fp, name="w1")
 }
 
 # Or specify cutoff directly
-wbt1<-makeBinTemplate("btnw.wav",amp.cutoff=-40,name="w1")
+wbt1<-makeBinTemplate(btnw.fp, amp.cutoff=-40, name="w1")
 
 # Specify time and frequency limits to focus on a smaller area in spectrogram, and add a buffer
 \dontrun{
-wbt2<-makeBinTemplate("btnw.wav",amp.cutoff=-30,t.lim=c(1.5,2.1),frq.lim=c(4.2,5.6),
-buffer=2,name="w2")
+wbt2<-makeBinTemplate(btnw.fp, amp.cutoff=-30, t.lim=c(1.5, 2.1), frq.lim=c(4.2, 5.6),
+                      buffer=2, name="w2")
 }
 
 # For finer control, see options for select argument, e.g.,
 \dontrun{
-wbt3<-makeBinTemplate("btnw.wav",amp.cutoff=-40,t.lim=c(0.5,2.5),frq.lim=c(1,11),
-select="cell",name="w3")
-wbt4<-makeBinTemplate("btnw.wav",amp.cutoff=-40,t.lim=c(0.5,2.5),frq.lim=c(1,11),
-select="rectangle",buffer=3,name="w4")
+# Not run because it requires user input to select cells for the template
+wbt3<-makeBinTemplate(btnw.fp, amp.cutoff=-40, t.lim=c(0.5, 2.5), frq.lim=c(1, 11),
+                      select="cell", name="w3")
+wbt4<-makeBinTemplate(btnw.fp, amp.cutoff=-40, t.lim=c(0.5, 2.5), frq.lim=c(1, 11),
+                      select="rectangle", buffer=3, name="w4")
 }
 
+# Clean up (only because these files were created in these examples)
+file.remove(btnw.fp)
+file.remove(oven.fp)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

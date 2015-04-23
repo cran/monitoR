@@ -39,14 +39,8 @@ Sasha D. Hafner
 \examples{
 data(survey_anno)
 data(survey)
-events <- collapseClips(
-            rec = survey, 
-            start.times = survey_anno[,"start.time"], 
-            end.times = survey_anno[,"end.time"], 
-            return.times = FALSE)
-            
-            
-            
+events <- collapseClips(rec = survey, start.times = survey_anno[,"start.time"], 
+                        end.times = survey_anno[,"end.time"], return.times = FALSE)
 }
 
 \keyword{manip}

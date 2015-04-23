@@ -50,8 +50,9 @@ Towsey M, B Planitz, A Nantes, J Wimmer, and P Roe.  2012.  A toolbox for animal
 data(survey)
 viewSpec(survey)
 
-\dontrun{
 # Annotate features
+\dontrun{
+# Not run because it is interactive and a file is written to user's working directory
 viewSpec(survey,annotate=TRUE)
 
 # View previous annotations
@@ -62,26 +63,37 @@ viewSpec(survey,annotate=TRUE,anno="survey_anno.csv",start.time=5)
 
 # Load example Wave object
 data(btnw)
+data(oven)
+data(survey)
 
-# Use a Wave object directly to make a correlation template
-wct1<-makeCorTemplate(btnw,frq.lim=c(3.5,6.5),name="w1")
-# And a binary point template
-wbt1<-makeBinTemplate(btnw,frq.lim=c(3.5,6.5),name="w1",amp.cutoff=-25)
+# Write Wave objects to file (temporary directory used here)
+btnw.fp<-file.path(tempdir(),"btnw.wav")
+oven.fp<-file.path(tempdir(),"oven.wav")
+survey.fp<-file.path(tempdir(),"survey2010-12-31_120000_EST.wav")
+writeWave(btnw, btnw.fp)
+writeWave(oven, oven.fp)
+writeWave(survey, survey.fp)
+
+# Correlation example
+# Create two correlation templates
+wct<-makeCorTemplate(btnw.fp, t.lim=c(1.5, 2.1), frq.lim=c(4.2, 5.6), name="w")
+oct<-makeCorTemplate(oven.fp, t.lim=c(1, 4), frq.lim=c(1, 11), dens=0.1, name="o")
+
+# Combine them
+ctemps<-combineCorTemplates(wct, oct)
 
 # Calculate scores
-cscores<-corMatch(survey=survey,templates=wct1,time.source="fileinfo")
-bscores<-binMatch(survey=survey,templates=wbt1,time.source="fileinfo")
+cscores<-corMatch(survey.fp, ctemps)
 
 # Find peaks and detections
 cdetects<-findPeaks(cscores)
-bdetects<-findPeaks(bscores)
 
 # View results
 plot(cdetects,hit.marker="points")
-plot(bdetects,hit.marker="points")
 
-\dontrun{
 # Interactively inspect individual detections
+\dontrun{
+# Not run because it is interactive
 cdetects<-showPeaks(cdetects, which.one="w1", flim = c(2,8), point=TRUE, 
 scorelim=c(0,1), verify=TRUE)
 }

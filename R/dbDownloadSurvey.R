@@ -1,45 +1,76 @@
 # Function to download survey metadata from a database
 # Created 2012 Nov 07
 dbDownloadSurvey<-function(
-    db.name='acoustics',	             # Connection name in ODBC _and_ on host
+    db.name='acoustics',	            # Connection name in ODBC _and_ on host
     uid,                                # Database User ID, if not in ODBC
     pwd,                                # Database Password, if not in ODBC
-    start.date,                        # First date to download survey paths 
-    end.date,                          # Last date to download survey paths
+    start.date,                         # First date to download survey paths 
+    end.date,                           # Last date to download survey paths
     loc.prefix,                         # Survey location(s) for which to download survey paths, missing==all
-    samp.rate=c(24000,44100),          # Specify one or a vector of sampling rate(s)
-    ext=c('wav','mp3'),                # Specify one or a vector of extension(s)
-    ...									# Additional arguments to odbcConnect
+    samp.rate,                          # Specify one or a vector of sampling rate(s)
+    ext,                                # Specify one or a vector of extension(s)
+    ...									# Additional arguments to RODBC::odbcConnect
     ){
    
     start.time<-Sys.time()
-    
-    require(RODBC)
    
-    if(!missing(loc.prefix)){
-        if (nchar(loc.prefix)!=6) {stop(paste('loc.prefix must be 6 characters, got',loc.prefix))}
+    params<-c(!missing(start.date),!missing(end.date),!missing(samp.rate),!missing(ext),!missing(loc.prefix))
+    if(sum(params)>0) {
+        filter<-" WHERE "
+        op<-params
+        op[params]<-" AND "
+        op[!params]<-""
+    } else {
+        filter<-""
+        op<-rep("",5)
     }
-      
+    if(sum(params)<2) {
+        filter<-" WHERE "
+        op<-rep("",5)
+    }
+    
+    if(!missing(loc.prefix)) {
+        loc.prefix<-paste0("(",paste0("`tblLocation`.`fldLocationNameAbbreviation` = '",paste0(loc.prefix,collapse="' OR `tblLocation`.`fldLocationNameAbbreviation` = '")),"')")
+    } else {
+        loc.prefix<-""
+    }
+    
+    if(!missing(start.date)) {
+        start.date<-paste0("(",paste0(" `fldOriginalDateModified` >= '",paste0(start.date,collapse="' OR `tblSurvey`.`fldOriginalDateModified` = '")),"')")
+    } else {
+        start.date<-""
+    }
+    
+    if(!missing(end.date)) {
+        end.date<-paste0("(",paste0(" `tblSurvey`.`fldOriginalDateModified` <= '",paste0(end.date,collapse="' OR `tblSurvey`.`fldOriginalDateModified` = '")),"')")
+    } else {
+        end.date<-""
+    }
+    
+    if(!missing(samp.rate)) {
+        samp.rate<-paste0("(",paste0(" `tblSurvey`.`fldSampleRate` = '",paste0(samp.rate,collapse="' OR `tblSurvey`.`fldSampleRate` = '")),"')")
+    } else {
+        samp.rate<-""
+    }
+    
+    if(!missing(ext)) {
+        ext<-paste0("(",paste0(" `tblSurvey`.`fldRecordingFormat` = '",paste0(ext,collapse="' OR `tblSurvey`.`fldRecordingFormat` = '")),"')")
+    } else {
+        ext<-""
+    }
+    
+    query<-paste0("SELECT `fldSurveyName` FROM `tblSurvey` INNER JOIN `tblCardRecorder` ON `tblCardRecorder`.`pkCardRecorderID` = `tblSurvey`.`fkCardRecorderID` INNER JOIN `tblLocation` ON `tblLocation`.`pkLocationID` = `tblCardRecorder`.`fkLocationID`",filter,start.date,op[1],end.date,op[2],samp.rate,op[3],ext,op[4],loc.prefix,";")
+    
     # open the database connection
-    if(missing(uid) && missing(pwd)) {dbCon<-odbcConnect(db.name,...)
-    } else if(missing(uid)) {dbCon<-odbcConnect(db.name,pwd,...)
-    } else dbCon<-odbcConnect(db.name,uid,pwd,...)
+    if(missing(uid) && missing(pwd)) {dbCon<-RODBC::odbcConnect(db.name,...)
+    } else if(missing(uid)) {dbCon<-RODBC::odbcConnect(db.name,pwd,...)
+    } else dbCon<-RODBC::odbcConnect(db.name,uid,pwd,...)
     
     # Establish a cleanup procedure
     on.exit(close(dbCon))
     
-    # Replace samp.rate with a portion of a query for samp.rate
-    samp.rate<-paste(samp.rate,collapse="' OR `fldSampleRate` = '")
-    # Replace ext with a portion of a query for ext
-    ext<-paste(ext,collapse="' OR `fldRecordingFormat` = '")  
-    # Choose whether to download all surveys from all sites or just the specified one(s)
-    if(missing(loc.prefix)) {    
-         query<-paste("SELECT `fldSurveyName` FROM `tblSurvey` WHERE `fldOriginalDateModified` >= '",start.date,"' AND `fldOriginalDateModified` <= '",end.date,"' AND `fldSampleRate` = '",samp.rate,"' AND `fldRecordingFormat` = '",ext,"'",sep="")
-    } else {
-         query<-paste("SELECT `tblSurvey`.`fldSurveyName` FROM `tblSurvey` INNER JOIN (`tblLocation` INNER JOIN `tblCardRecorder` ON `tblLocation`.`pkLocationID` = `tblCardRecorder`.`pkCardRecorderID`) ON `tblCardRecorder`.`pkCardRecorderID` = `tblSurvey`.`fkCardRecorderID` WHERE `tblSurvey`.`fldOriginalDateModified` >= '",start.date,"' AND `tblSurvey`.`fldOriginalDateModified` <= '",end.date,"' AND `fldSampleRate` = '",samp.rate,"' AND `fldRecordingFormat` = '",ext,"' AND `tblLocation`.`fldLocationNameAbbreviation` = '",paste(loc.prefix,sep="",collapse="' OR `tblLocation`.`fldLocationNameAbbreviation` = '"),"' ",sep="")}
-                
     # Download the names of the surveys 
-    surveys<-sqlQuery(dbCon,query,stringsAsFactors=FALSE)
+    surveys<-RODBC::sqlQuery(dbCon,query,stringsAsFactors=FALSE)
     
     message(if(class(surveys)=='data.frame') {paste('Done! Download time:',round(Sys.time()-start.time,2),'seconds')
             } else paste("Download unsuccessful; RODBC returned errors: ",paste(surveys, collapse=" ")))

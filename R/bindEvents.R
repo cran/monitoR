@@ -1,4 +1,4 @@
-# Modified: 2014 MAR 29
+# Modified: 2015 APR 2
 
 bindEvents <-
 function(
@@ -8,8 +8,6 @@ function(
    parallel=FALSE,
    return.times=FALSE
 ) {
-
-   if(parallel) require(parallel)
 
    # Read in the event file
    if(class(file) != "data.frame") events<-read.csv(file=file)
@@ -27,7 +25,7 @@ function(
    # Collapse recording
    # CAN SIMPLIFY THIS A BIT BY USING A SINGLE LAPPLYFUN AS IN SCCCOR ETC
    if(parallel && by.species) {
-      collapsed<-mclapply(X=events,FUN=function(x) collapseClips(rec=rec,start.times=x$start.time,end.times=x$end.time),max(1,detectCores()-1))
+      collapsed<-parallel::mclapply(X=events,FUN=function(x) collapseClips(rec=rec,start.times=x$start.time,end.times=x$end.time),max(1,parallel::detectCores()-1))
       #events<-unsplit(events,spp)
    } else if(by.species) {
       collapsed<-lapply(X=events,FUN=function(x) collapseClips(rec=rec,start.times=x$start.time,end.times=x$end.time))

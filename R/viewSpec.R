@@ -1,5 +1,5 @@
 # For viewing spectrograms
-# Modified: 2014 MAR 29
+# Modified: 2015 APR 2
 
 viewSpec <-
 function(
@@ -69,7 +69,8 @@ function(
              anno.dat<-read.csv(anno,header=TRUE)
              anno.mat<-data.frame("start.time"=NULL,"end.time"=NULL,"min.frq"=NULL,"max.frq"=NULL,"text"=NULL)
          }
-         txt<-NA 
+         txt<-NA
+         interactive<-TRUE 
     }
     a.mode<-FALSE # a.mode is continuous annotation until canceled: off until annotation begins
 
@@ -193,7 +194,7 @@ function(
           } else if(!a.mode) cat('Enter: \n  n(m) for next page, \n  b(v) for previous page,\n  p to play, \n  z to zoom in, \n  x to zoom out, \n  s to save page as wave file,\n  c to change spectrogram parameters,\n  q to exit\n')  
           if(a.mode) x<-'a'
           else x<-tolower(readLines(n=1))
-          if(x!="" && x=='n') { # page right
+          if(x=="" || x=='n') { # page right; previously read x!="" && x=='n'
              if(page.end>=header$samples/header$sample.rate) {
                 start.time<-header$samples/header$sample.rate-page.length
                 cat('End of file.\n')
@@ -216,10 +217,11 @@ function(
                 start.time<-start.time-page.length/2+page.ovlp*page.length
                 }
           } else if(x!="" && x=='p') {
-             writeWave(object=wave,filename='temp.wav')
+             writeWave(object=wave,filename=tempname<-tempfile(fileext='.wav'))
              # Variation on next line may be needed if player is slow
              #Sys.sleep(2) 
-             system(command=paste(player,' temp.wav',sep=''),wait=FALSE)
+             if(tolower(Sys.info()['sysname'])=='windows') shell(cmd=paste(player,tempname),wait=FALSE)
+             else system(command=paste(player,tempname),wait=FALSE)
              if(page.length<5) {
                 bins<-1
                 len.out<-40
@@ -279,6 +281,19 @@ function(
              cat("Enter new spectrogram parameter.\nCurrent parameters:\n  start.time = ",start.time,"\n  units = ",units,"\n  frq.lim = c(", frq.lim[1],",",frq.lim[2],")\n  wl = ",wl,"\n  ovlp = ",ovlp,"\n  output.dir = ",output.dir,"\n  page.ovlp = ",page.ovlp,"\n  player = ",player,"\nor press 'c' to cancel\n",sep="")
              param<-readLines(n=1)
              eval(parse(text=param))
+          } else if(x!="" && x=='i') {# identify amplitude
+             cat('Left click at upper left corner of selection, right click twice to exit\n')
+             tl<-locator(1,type="p",pch=3)         
+             cat('Left click at lower right corner of selection, right click once to exit\n')
+             lr<-locator(1)
+             if(length(tl)!=0 && length(lr)>0) {
+                 rect(tl$x,lr$y,lr$x,tl$y)
+                 dim.amp<-dim(step[['amp']])
+                 sel.rows<-which(1:dim.amp[1]>=lr$y & 1:dim.amp[1]<=tl$y)
+                 sel.cols<-which(1:dim.amp[2]>=tl$x & 1:dim.amp[2]<=lr$x)
+                 sel<-step[['amp']][sel.rows,sel.cols]
+                 cat('RMS amp =',mean(sel),'\n')
+             }
           } else if(x!="" && x=='a') {# annotation: experimental!
           	 a.mode<-TRUE
              cat('Left click at upper left corner of selection, right click twice to exit\n')
@@ -341,7 +356,7 @@ function(
                         if(file.name!="") {
                             anno.dat<-anno.dat[order(anno.dat[,'start.time']),]
                 	        write.csv(anno.dat,paste0(output.dir,"/",file.name),row.names=FALSE)
-                	        cat("Saved.")
+                	        cat("Saved.\n")
                 	        file.remove('TMPannotations.csv')
                         } else cat("Annotations not saved.  BUT they are in 'TMPannotations.csv' until written over.\n")
                     }
@@ -350,7 +365,7 @@ function(
              start.time<-header$samples/header$sample.rate
              cat('Quitting...\n')
     #         dev.off()
-          } else if(x=="") cat('\nNo selection made.\n\n')
+          } # else if(x=="") cat('\nNo selection made.\n\n')
           if(annotate && exists('anno.spec') && nrow(anno.dat)>0) write.csv(anno.dat,'TMPannotations.csv',row.names=FALSE)
        }
      }

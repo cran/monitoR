@@ -9,10 +9,9 @@ dbSchema <- function(
     db.name='acoustics',	              # Connection name in ODBC data source
     uid,                                   # Database User ID, if not in ODBC
     pwd,                                 # Database Password, if not in ODBC
-    ...                                     # Additional arguments to odbcConnect()
+    ...                                     # Additional arguments to RODBC::odbcConnect()
 ){
 
-    require(RODBC)
     start.time<-Sys.time()
     
     # Read in the schema, break it up appropriately
@@ -27,25 +26,25 @@ dbSchema <- function(
     schema<-lapply(schema, function(x) strsplit(x,';;'))
     schema<-unlist(schema)    
     # Open the database connection
-    if(missing(uid) && missing(pwd)) {dbCon<-odbcConnect(db.name,...)
-    } else if(missing(uid)) {dbCon<-odbcConnect(db.name,pwd,...)
-    } else dbCon<-odbcConnect(db.name,uid,pwd,...)
+    if(missing(uid) && missing(pwd)) {dbCon<-RODBC::odbcConnect(db.name,...)
+    } else if(missing(uid)) {dbCon<-RODBC::odbcConnect(db.name,pwd,...)
+    } else dbCon<-RODBC::odbcConnect(db.name,uid,pwd,...)
     
     # Establish a cleanup procedure
     on.exit(close(dbCon))
     
     # Push the intro through
-    x<-sqlQuery(dbCon,"SET FOREIGN_KEY_CHECKS=0;")
-#    x<-sqlQuery(dbCon,intro)
+    x<-RODBC::sqlQuery(dbCon,"SET FOREIGN_KEY_CHECKS=0;")
+#    x<-RODBC::sqlQuery(dbCon,intro)
     for(i in 1:length(schema)) {
-        x<-sqlQuery(dbCon,schema[i])
+        x<-RODBC::sqlQuery(dbCon,schema[i])
         if(all(length(x) != 0, x != "No Data")) warning('Error at:\n',schema[i], '\n', x, '\nVerify tables before continuing.\n')
     }
     # Push the closure through    
-    x<-sqlQuery(dbCon,"SET FOREIGN_KEY_CHECKS=1;")
+    x<-RODBC::sqlQuery(dbCon,"SET FOREIGN_KEY_CHECKS=1;")
     # Get a list of tables
     if(tables) {
-        tables<-sqlTables(dbCon)
+        tables<-RODBC::sqlTables(dbCon)
         return(list(upload.time=paste("Upload time",round(Sys.time()-start.time,3),units(Sys.time()-start.time)), tables=tables))
     } else return(paste("Upload time",round(Sys.time()-start.time,3),units(Sys.time()-start.time)))
 }

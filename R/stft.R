@@ -1,14 +1,15 @@
-# Copied from seewave, with only modification identified below
+# Copied from seewave, with only modification being addition of fftw:: at all planFFT and FFT calls
+# Modified: 2015 APR 2
+
 stft <-
 function (wave, f, wl, zp, step, wn, norm = FALSE, fftw = FALSE) 
 {
-   if(fftw) require(fftw) # This addition is the only modification
    zpl <- zp%/%2
    if (zpl == 0) {
       W <- ftwindow(wl = wl, wn = wn)
       if (fftw) {
-         p <- planFFT(wl)
-         z1 <- apply(as.matrix(step), 1, function(x) Mod(FFT(wave[x:(wl + x - 1)] * W, plan = p)))
+         p <- fftw::planFFT(wl)
+         z1 <- apply(as.matrix(step), 1, function(x) Mod(fftw::FFT(wave[x:(wl + x - 1)] * W, plan = p)))
       }
       else {
          z1 <- apply(as.matrix(step), 1, function(x) Mod(fft(wave[x:(wl + x - 1), ] * W)))
@@ -17,8 +18,8 @@ function (wave, f, wl, zp, step, wn, norm = FALSE, fftw = FALSE)
    else {
       W <- ftwindow(wl = wl + zp, wn = wn)
       if (fftw) {
-         p <- planFFT(wl + zp)
-         z1 <- apply(as.matrix(step), 1, function(x) Mod(FFT(c(1:zpl, 
+         p <- fftw::planFFT(wl + zp)
+         z1 <- apply(as.matrix(step), 1, function(x) Mod(fftw::FFT(c(1:zpl, 
             wave[x:(wl + x - 1), ], 1:zpl) * W, plan = p)))
       }
       else {

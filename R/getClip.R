@@ -1,11 +1,12 @@
 # Functions for sorting out sound clips
 # It can accept (1) Wave objects or file paths to (2) wav or (3) mp3 objects, and return either 1 or 2
-# Modified: 2014 MAR 19
+# Modified: 2014 APR 22
 
 getClip<-function(
   clip,
   name="clip",
-  output="file"
+  output="file",
+  write.wav=FALSE
 ) {
 
   if(class(clip)=="list" | (class(clip)=="character" && length(clip)>1)) {
@@ -16,30 +17,34 @@ getClip<-function(
       name<-strsplit(name,",")[[1]]
     }
     for(i in seq(length(clip))) {
-      clist[[i]]<-getOneClip(clip[[i]],paste0(name[i],i),output) 
+      clist[[i]]<-getOneClip(clip[[i]],paste0(name[i],i),output,write.wav) 
     }
     return(clist)
   } 
 
-  return(getOneClip(clip,name,output))
+  return(getOneClip(clip,name,output,write.wav))
 
 }
 
 getOneClip<-function(
   clip,
   name,
-  output
+  output,
+  write.wav
 ) {
 
   if(output=="file") {
     if(class(clip)=="Wave") {
       fname<-paste0(name,".wav")
-      if(file.exists(fname)) warning("Having trouble creating a wav file from this clip\nFile with name ",fname," already exists!",immediate.=TRUE)
+      if(!write.wav) {
+	stop("output argument is \"file\" but write.wav argument is FALSE so this function will not create a file. Set write.wav=TRUE to create a file, or else specify a wav file instead of a Wave object.")
+      }
+      if(file.exists(fname)) stop("Will not create a wav file from this clip because a file with name ",fname," already exists.")
       else writeWave(clip,fname) 
       return(fname)
     } else 
     if(class(clip)=="character") {
-      if(!file.exists(clip)) stop("clip argument seems to be a file name but no file with the name ",clip," exists!")
+      if(!file.exists(clip)) stop("clip argument seems to be a file name but no file with the name ",clip," exists.")
       return(clip)
     } else 
     stop("Can\'t figure out what to do with this clip:",clip,"with class:",class(clip))

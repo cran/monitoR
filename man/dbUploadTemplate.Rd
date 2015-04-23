@@ -23,7 +23,7 @@ type, ...)
   \item{date.recorded}{Dates template clip was recorded, in a recognizable POSIX format: YYYY/MM/DD.}
   \item{recording.equip}{Equipment used to record template clip.}
   \item{species.code}{Character value corresponding to the species' tblSpecies.fldSpeciesCode value in the acoustics database; usually a 4, 6, or 8-character code.  Codes not in the database will return a cryptic error and cause upload to fail.}
-  \item{type}{Character value identifying template type, in c("BIN","COR").  Some partial matching is performed.}
+  \item{type}{Character value identifying template type, in c("BIN", "COR").  Some partial matching is performed.}
   \item{\dots}{Additional arguments to \code{RODBC::odbcConnect}.}
 }
 
@@ -51,10 +51,11 @@ In the acoustics database templates are broken into components, and vectors are 
 
 \examples{
 # Template construction
+\dontrun{
 data(btnw)
 b4<-makeBinTemplate(
     "btnw.wav",
-    frq.lim=c(2,8),
+    frq.lim=c(2, 8),
     select="auto",
     name="b4",
     buffer=4,
@@ -85,6 +86,7 @@ dbUploadTemplate(
     recording.equip = "SM2", 
     species.code = "BTNW", 
     type = "BIN")}
+}
 }
 
 \keyword{database}

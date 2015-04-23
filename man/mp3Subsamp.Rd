@@ -21,7 +21,7 @@ kbps = 128, samp.rate = 44100, channels = 2, split = TRUE)
   \item{duration}{Duration of surveys to extract (numeric, units = 'seconds'). Defaults to 600 seconds (10 minutes).}
   \item{mins.between}{Number of minutes to skip between surveys (numeric). If \code{index="hour"}, the value for \code{mins.between + duration * 60} (duration converted to minutes) equals the repeat period.  Defaults to 50 minutes, for a 60 minute repeat period.}
   \item{index}{Character value indicating whether to take the first survey at the next hour in the recording (identified based on file date modified) or simply from the start of the recording.  In \code{c("hour","time0")}.  Defaults to \code{"hour"}.}
-  \item{loc.prefix}{Six-character value identifying the location at which the recording was made.  Will be used in the file name (see Details) and the csv file name.  Must be in \emph{tblLocation.fldLocationName} in the acoustics database.}
+  \item{loc.prefix}{Six characters identifying the location at which the recording was made.  Will be used in the file name (see Details) and the csv file name.  Must be in \emph{tblLocation.fldLocationName} in the acoustics database.}
   \item{CardRecorderID}{Numeric key value from \emph{tblCardRecorder.pkCardRecorderID}, which links the recorder that made the recording with the location it was recorded.}
   \item{kbps}{Numeric value for mp3 bitrate.  Common values are \code{c(64,128,160,192,224,256,320)}.  Must match the bitrate set by the recording device.}
   \item{samp.rate}{Numeric value for mp3 sample rate.  Common values are \code{c(22050,44100,48000)}.  Must match the sample rate set by the recording device.}

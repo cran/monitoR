@@ -9,6 +9,7 @@ function(
    csv.name,               # Name of csv file
    loc.prefix,                # Location for files
    ext,                       # Extension
+   hours.offset=0,            # optional offset to modification time
    CardRecorderID=NA,         # ID of SD card
    kaleidoscope=TRUE,         # If using Wildlife Acoustics' Kaleidoscope for converting WAC to WAV
    split.channels=FALSE,      # If using Kaleidoscope's split channel option only the left channel will be used
@@ -68,7 +69,9 @@ function(
             survey.full.names<-strsplit(as.character(files),"/")
             survey.names<-unlist(lapply(survey.full.names,function(x) x[length(x)]))
          }
-         mdates<-as.character(file.info(files)$mtime,format='%Y-%m-%d_%H%M%S_%Z')
+         # Manually correct for timezone changes
+         mdates<-file.info(files)$mtime+hours.offset*3600
+         mdates<-as.character(mdates,format='%Y-%m-%d_%H%M%S_%Z')
          newfiles<-paste(to,'/',loc.prefix,'_',mdates,'.',ext,sep="")
          if(!kaleidoscope && rename) {newfilenames<-paste0(fpath,loc.prefix,'_',mdates,'.',ext)
          } else if(kaleidoscope && !split.channels && rename) {newfilenames<-paste0(fpath,loc.prefix,'_',mdates,'_00000_000.wav')

@@ -40,6 +40,8 @@ export(
   "templateCutoff<-",
   templateNames,
   "templateNames<-",
+  templatePath,
+  "templatePath<-",
   timeAlign,
   viewSpec,
   writeBinTemplates,

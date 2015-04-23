@@ -11,13 +11,10 @@ dbUploadResult<-function(
     pwd,                                # Database Password, if not in ODBC
     analysis.type,                     # Analysis type: COR(relation) or BIN(ary)
     analyst='',                        # From `tblPerson`.`pkPersonID`
-    ...									# Additional arguments to odbcConnect
+    ...									# Additional arguments to RODBC::odbcConnect
     ){
     
     start.time<-Sys.time()
-# NTS require not needed I think, delete
-#    require (RODBC)
-#    require (plyr)
     # Pull peaks from 'detectionList' object
     if(missing(which.one)){
         if(tolower(what) %in% c('p','peaks','pks')) {pks.L<-getPeaks(detection.obj=detection.obj,output='list')
@@ -35,9 +32,9 @@ dbUploadResult<-function(
     } else 
     	stop('Did not recognize analysis.type, was it BIN or COR?')
     # open the database connection
-    if(missing(uid) && missing(pwd)) {dbCon<-odbcConnect(db.name,...)
-    } else if(missing(uid)) {dbCon<-odbcConnect(db.name,pwd,...)
-    } else dbCon<-odbcConnect(db.name,uid,pwd,...)
+    if(missing(uid) && missing(pwd)) {dbCon<-RODBC::odbcConnect(db.name,...)
+    } else if(missing(uid)) {dbCon<-RODBC::odbcConnect(db.name,pwd,...)
+    } else dbCon<-RODBC::odbcConnect(db.name,uid,pwd,...)
     # Establish a cleanup procedure
     on.exit(close(dbCon))
  
@@ -52,7 +49,7 @@ dbUploadResult<-function(
     templateID<-unlist(lapply(pks.L,function(x) unique(x$template)))
     
     # get list of templates, currently based on fldTemplateName, might change to pkTemplateID??
-    template.dat<-sqlQuery(dbCon,paste("Select `pkTemplateID`,`fldTemplateName` FROM `tblTemplate` WHERE `fldTemplateName` = '", paste(names(pks.L),sep="",collapse="' OR `fldTemplateName` = '"),"'",sep="")) 
+    template.dat<-RODBC::sqlQuery(dbCon,paste("Select `pkTemplateID`,`fldTemplateName` FROM `tblTemplate` WHERE `fldTemplateName` = '", paste(names(pks.L),sep="",collapse="' OR `fldTemplateName` = '"),"'",sep="")) 
         
     # replace template names in new variable with fkTemplateIDs
     for (i in 1:length(templateID)){
@@ -62,7 +59,7 @@ dbUploadResult<-function(
     # get list of surveys, based on fldSurveyName
     survey.name<-detection.obj@survey.name
         
-    survey.dat<-sqlQuery(dbCon,paste("Select `pkSurveyID`,`fldSurveyName` FROM `tblSurvey` WHERE `fldSurveyName` = '", paste(survey.name,sep="",collapse="' OR `fldSurveyName` = '"),"'",sep="")) 
+    survey.dat<-RODBC::sqlQuery(dbCon,paste("Select `pkSurveyID`,`fldSurveyName` FROM `tblSurvey` WHERE `fldSurveyName` = '", paste(survey.name,sep="",collapse="' OR `fldSurveyName` = '"),"'",sep="")) 
         
     # replace survey names in new variable with fkSurveyIDs
     for (i in 1:length(survey.name)){
@@ -90,7 +87,7 @@ dbUploadResult<-function(
     # Alert user
     message('\nUploading...')
     # push the query through the open connection to the database     
-    status <- sqlQuery(dbCon,query)
+    status <- RODBC::sqlQuery(dbCon,query)
     
     # report to user
     message(if(is.na(status[1])) {paste('Done! Upload time:',round(Sys.time()-start.time,2),'seconds')

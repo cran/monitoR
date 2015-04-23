@@ -1,31 +1,32 @@
-\name{templateNames}
-\alias{templateNames}
-\alias{templateNames<-}
+\name{templatePath}
+\alias{templatePath}
+\alias{templatePath<-}
 
 \title{
-  Names of Templates
+  Song clip path of Templates
 }
 
 \description{
-  Functions to check or change the names of templates within an acoustic template list.
+  Functions to check or change the song clip path of templates within an acoustic template list.
 }
 
 \usage{
-  templateNames(object)
-  templateNames(object)<-value
+  templatePath(object)
+  templatePath(object)<-value
 }
 
 \arguments{
   \item{object}{An acoustic template list, i.e., a \code{\linkS4class{corTemplateList}} or \code{\linkS4class{binTemplateList}} object.}
-  \item{value}{A character vector of names. May be named.}
+  \item{value}{A character vector of paths. May be named.}
 }
 
 \details{
-This function is analogous to the function \code{\link[base]{names}}.
+This function works in the same way as the function \code{\link[base]{names}}.
+No check is performed to ensure that the specified path is valid.
 }
 
 \value{
-For \code{names}, \code{NULL} or a character vector of the same length as \code{object}. For \code{names<-}, the updated template list, i.e., the original template list with only the names changed.
+For \code{filePath}, \code{NULL} or a character vector of the same length as \code{object}. For \code{filePath<-}, the updated template list, i.e., the original template list with only the clip.path values changed.
 }
 
 \author{
@@ -36,14 +37,14 @@ Sasha D. Hafner
 \code{\link{makeCorTemplate}},
 \code{\link{makeBinTemplate}},
 \code{\link{templateComment}},
-\code{\link{templateCutoff}}
+\code{\link{templateCutoff}},
+\code{\link{templateNames}},
 }
 
 \examples{
 # Load data
 data(btnw)
 data(oven)
-data(survey)
 
 # Write Wave objects to file (temporary directory used here)
 btnw.fp<-file.path(tempdir(),"btnw.wav")
@@ -61,17 +62,11 @@ oct2<-makeCorTemplate(oven.fp, t.lim=c(1, 4), frq.lim=c(1, 11), dens=0.1, name="
 ctemps<-combineCorTemplates(wct1, wct2, oct1, oct2)
 ctemps
 
-# To check template names
-templateNames(ctemps)
+# To check paths
+templatePath(ctemps)
 
 # Change the first two
-templateNames(ctemps)[1:2]<-c("warbler 1", "warbler 2")
-
-# Change all
-templateNames(ctemps)<-c("a", "b", "c", "d")
-
-# To check template names
-templateNames(ctemps)
+templatePath(ctemps)[1:2]<-c("~/templates/btnw.wav", "~/templates/btnw.wav")
 
 # Clean up (only because these files were created in these examples)
 file.remove(btnw.fp)

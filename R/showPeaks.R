@@ -1,4 +1,4 @@
-# Modified: 2013 MAY 14
+# Modified: 2015 APR 2
 
 showPeaks <-
 function(
@@ -14,9 +14,12 @@ function(
    scorelim=NULL,                  # Plot limits for scores
    verify=FALSE,                   # Set to true for verification
    what='detections',              # 'detections' for just detections, 'peaks' for all peaks
-   box=TRUE,                       # Set to FALSE to surpress box in spectrogram
+   box=TRUE,                       # Set to FALSE to suppress box in spectrogram or "template" 
    player='play',                  # Command to call up external wave player, e.g., 'wv_player.exe' (Windows) or 'play' (SoX in Linux)
-   spec.col=gray.3()               # Color palette for spectrogram
+   spec.col=gray.3(),              # Color palette for spectrogram
+   on.col='#FFA50075',             # Color for on points in binary templates
+   off.col='#0000FF75',            # Color for off points in binary templates
+   pt.col='#FFA50075'              # Color for correlation template points
 ) {
 
    # Check arguments
@@ -51,7 +54,7 @@ function(
    if(!missing(t.lim)) id<-which(pks$time>=min(t.lim) & pks$time<=max(t.lim))
 
    # Exit if there are no hits to show
-   if(length(id)==0) stop('No peaks selected.')
+   if(length(id)==0 | all(id[1]==1,id[2]==0)) stop('No peaks selected.')
    # THERE IS A FUNCTION NAMED ID, SHOULD CHANGE NAME HERE
 
    # Loop through all peaks requested
@@ -72,12 +75,41 @@ function(
       amp.clip<-amp[,t.bins %in% times]
       image(x=times,y=frq.bins,t(amp.clip),col=spec.col,xlab='',ylab='Frequency (kHz)',xaxt='n',las=1,main=paste(if(what=="detections") "Detection" else "Peak",i))
  
-      if(box & nrow(pks)>0) {
+      if(box==TRUE & nrow(pks)>0) {
          xleft<-pks$time[i]-template@duration/2
          xright<-pks$time[i]+template@duration/2
          ylwr<-template@frq.lim[1]
          yupr<-template@frq.lim[2]
          polygon(x=c(xleft,xleft,xright,xright),y=c(ylwr,yupr,yupr,ylwr),border='blue')
+      } else if(tolower(box)=='template' & nrow(pks)>0) {
+         xleft<-pks$time[i]-template@duration/2
+         ylwr<-template@frq.lim[1]
+         # Plot template points
+         if(class(template)=='binTemplate') {
+            pt.on<-template@pt.on
+            pt.off<-template@pt.off
+            pt.on[,'t']<-pt.on[,'t'] + ((xleft-min(times))/template@t.step)
+            pt.off[,'t']<-pt.off[,'t'] + ((xleft-min(times))/template@t.step)
+            pt.on[,'frq']<-pt.on[,'frq'] + ylwr - 1 
+            pt.off[,'frq']<-pt.off[,'frq'] + ylwr - 1
+            
+            bin.amp<-0*amp.clip
+            bin.amp[pt.on[,c(2,1)]]<-1
+            bin.amp[pt.off[,c(2,1)]]<-2
+      
+            image(x=times,y=frq.bins,t(bin.amp),zlim=c(0,2),col=c('transparent',on.col,off.col),add=TRUE)
+      
+         } else if (class(template)=='corTemplate') {
+      
+            pts<-template@pts
+            pts[,'t']<-pts[,'t'] + ((xleft-min(times))/template@t.step)
+            pts[,'frq']<-pts[,'frq'] + ylwr - 1
+            bin.amp<-0*amp.clip
+            bin.amp[pts[,c(2,1)]]<-1
+      
+            image(x=times,y=which.frq.bins,t(bin.amp),zlim=c(0,1),col=c('transparent',pt.col),add=TRUE)
+      
+         } else stop('Template list class not recognized: ',class(template))
       }
 
       par(mar=c(4,4,1,1))
@@ -118,11 +150,15 @@ function(
             if(x=='q') return()
 
             if(x=='p') {
-               writeWave(object=survey.clip,filename=tempname<-paste0('temp',Sys.time(),'.wav'))
+               writeWave(object=survey.clip,filename=tempname<-tempfile(fileext='.wav'))
                # Variation on next line may be needed if player is slow
                #Sys.sleep(2) 
-               cat("Shell command:",paste0(player," \"",tempname,"\""),'\n')
-               system(command=paste0(player," \"",tempname,"\""),wait=FALSE)
+               cat("Shell command:",paste(player,tempname),'\n')
+               if(tolower(Sys.info()['sysname'])=='windows') shell(cmd=paste(player,tempname),wait=FALSE)
+               else system(command=paste(player,tempname),wait=FALSE)
+               # writeWave(object=survey.clip,filename=tempname<-paste0('temp',Sys.time(),'.wav'))
+               # cat("Shell command:",paste0(player," \"",tempname,"\""),'\n')
+               # system(command=paste0(player," \"",tempname,"\""),wait=FALSE)
                prev.line<-0
                for(j in seq(t.start,t.end,length.out=20)) {
                   t1<-Sys.time()

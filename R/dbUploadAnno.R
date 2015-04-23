@@ -7,17 +7,16 @@ dbUploadAnno<-function(
     uid,                    # Database User ID, if not in ODBC
     pwd,                    # Database Password, if not in ODBC
     analyst='',             # From `tblPerson`.`pkPersonID`
-    ...                     # Additional arguments to odbcConnect
+    ...                     # Additional arguments to RODBC::odbcConnect
 ){
 
     start.time<-Sys.time()
-    require (RODBC)
     if(any(missing(survey),class(survey)!='character',length(survey)>1)) stop("Must specify 1 survey name (cannot be a wave object).")
     
     # open the database connection
-    if(missing(uid) && missing(pwd)) {dbCon<-odbcConnect(db.name,...)
-    } else if(missing(uid)) {dbCon<-odbcConnect(db.name,pwd,...)
-    } else dbCon<-odbcConnect(db.name,uid,pwd,...)
+    if(missing(uid) && missing(pwd)) {dbCon<-RODBC::odbcConnect(db.name,...)
+    } else if(missing(uid)) {dbCon<-RODBC::odbcConnect(db.name,pwd,...)
+    } else dbCon<-RODBC::odbcConnect(db.name,uid,pwd,...)
     
     # Read in annotations, if necessary
     if(class(annotations)=='character') { 
@@ -29,7 +28,7 @@ dbUploadAnno<-function(
     on.exit(close(dbCon))
     
     # get table of surveys from fldSurveyName
-    survey<-sqlQuery(dbCon,paste0("Select `pkSurveyID`,`fldOriginalDateModified` FROM `tblSurvey` WHERE `fldSurveyName` = '",survey,"'")) 
+    survey<-RODBC::sqlQuery(dbCon,paste0("Select `pkSurveyID`,`fldOriginalDateModified` FROM `tblSurvey` WHERE `fldSurveyName` = '",survey,"'")) 
         
 #    # convert date.time characters to datetime data type format
 #    date.time<-unlist(lapply(X=pks.L$date.time, FUN=substr, start=1,stop=19))
@@ -42,7 +41,7 @@ dbUploadAnno<-function(
     message('\nUploading...')
 
     # push the query through the open connection to the database     
-    status <- sqlQuery(dbCon,query)
+    status <- RODBC::sqlQuery(dbCon,query)
 
     # report to user
     message(if(is.na(status[1])) {paste('Done! Upload time:',round(Sys.time()-start.time,2),'seconds')

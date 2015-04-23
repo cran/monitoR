@@ -1,5 +1,5 @@
 # For writing out a binary template list
-# Modified: 2014 FEB 07
+# Modified: 2015 APR 2
 
 writeBinTemplates <-
 function(
@@ -15,8 +15,7 @@ function(
    if(!file.exists(dir)) dir.create(dir)
 
    if(parallel) {
-      require(parallel)
-      lapplyfun<-function(X,FUN) mclapply(X,FUN,mc.cores=detectCores())
+      lapplyfun<-function(X,FUN) parallel::mclapply(X,FUN,mc.cores=parallel::detectCores())
    } else lapplyfun<-lapply
 
    names.templates<-names(templates@templates)

@@ -36,36 +36,40 @@ For replacement, the updated object.
 \code{\link{getTemplates}}
 }
 \examples{
-# Load example Wave objects
+# Load data
 data(btnw)
 data(oven)
 
-# Write Wave objects to file 
-writeWave(btnw,"btnw.wav")
-writeWave(oven,"oven.wav")
+# Write Wave objects to file (temporary directory used here)
+btnw.fp<-file.path(tempdir(),"btnw.wav")
+oven.fp<-file.path(tempdir(),"oven.wav")
+writeWave(btnw, btnw.fp)
+writeWave(oven, oven.fp)
 
-# Make a set of templateLists
-wct1<-makeCorTemplate("btnw.wav",name="w1")
-oct1<-makeCorTemplate("oven.wav",name="o1")
+# Create four correlation templates
+wct1<-makeCorTemplate(btnw.fp, name="w1")
+wct2<-makeCorTemplate(btnw.fp, t.lim=c(1.5, 2.1), frq.lim=c(4.2, 5.6), name="w2")
+oct1<-makeCorTemplate(oven.fp, t.lim=c(1, 4), frq.lim=c(1, 11), name="o1")
+oct2<-makeCorTemplate(oven.fp, t.lim=c(1, 4), frq.lim=c(1, 11), dens=0.1, name="o2")
 
-wbt1<-makeBinTemplate("btnw.wav",amp.cutoff=-20,name="w1")
-obt1<-makeBinTemplate("oven.wav",amp.cutoff=-20,name="o1")
+# Combine all of them
+ctemps<-combineCorTemplates(wct1, wct2, oct1, oct2)
+ctemps
 
-# Combine the pairs
-corTemps<-combineCorTemplates(wct1,oct1)
-binTemps<-combineBinTemplates(wbt1,obt1)
+# Add a comment for two templates
+templateComment(ctemps)<-c(w1="This is the best template so far.",
+                           o1="Should we drop the lowest syllable?")
 
-# Add a comment for each template
-templateComment(corTemps)<-c(w1="This is the best template so far.",
-o1="This template should be remade without the lowest syllable.")
-
-# Add a default comment to all templates
-templateComment(binTemps)<-c(default="These templates have not been tested.")
-
+# Add a default comment also
+templateComment(ctemps)<-c(w1="This is the best template so far.",
+                           o1="Should we drop the lowest syllable?",
+                           default="These templates have not been tested.")
 # View comments
-templateComment(corTemps)
-templateComment(binTemps)
+templateComment(ctemps)
 
+# Clean up (only because these files were created in these examples)
+file.remove(btnw.fp)
+file.remove(oven.fp)
 }
 
 \keyword{manip}

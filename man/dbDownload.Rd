@@ -6,11 +6,11 @@
 \description{Convenience functions to execute a prewritten SQL query.  Wrappers for \code{RODBC::sqlQuery} with no additional processing.}
 
 \usage{
-dbDownloadCardRecorderID(db.name = "acoustics", uid , pwd , 
+dbDownloadCardRecorderID(db.name = "acoustics", uid, pwd, 
 date.deployed, date.collected, loc.prefix, ...)
 
 dbDownloadSurvey(db.name = "acoustics", uid, pwd, start.date, end.date, loc.prefix, 
-samp.rate = c(24000, 44100), ext = c("wav", "mp3"), ...)
+samp.rate, ext, ...)
 }
 
 \arguments{
@@ -18,9 +18,9 @@ samp.rate = c(24000, 44100), ext = c("wav", "mp3"), ...)
   \item{uid}{User ID to allow ODBC connector to connect to database, if not present in ODBC connector.}
   \item{pwd}{Password to allow ODBC connector to connect to database, if not present in ODBC connector.}
   \item{date.deployed, date.collected, start.date, end.date}{Dates to filter results, in a recognizable POSIX format: \code{YYYY/MM/DD}.}
-  \item{loc.prefix}{Optional six-character location prefix or vector of six-character prefixes by which to filter results.}
-  \item{samp.rate}{Numerical sampling rate or surveys (Hz) or vector of sampling rates (default==44100).}
-  \item{ext}{Character file extension "wav" (default) or "mp3", or vector of file extensions.}
+  \item{loc.prefix}{Location prefix or vector of six-character prefixes by which to filter results.}
+  \item{samp.rate}{Numerical sampling rate of surveys (Hz).}
+  \item{ext}{Character file extension "wav" or "mp3".}
   \item{\dots}{Additional arguments to \code{RODBC::odbcConnect}.}
 }
 

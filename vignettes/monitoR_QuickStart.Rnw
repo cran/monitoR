@@ -105,17 +105,24 @@ viewSpec(btnw)
 viewSpec(oven)
 @
 
-As \texttt{Wave} objects, all of these recordings can be used directly in the template matching functions.
+As \texttt{Wave} objects, all of these recordings can be used directly in the template matching functions\footnote{
+  But you must set the \texttt{write.wav} argument to \texttt{TRUE} to do this.
+}.
 Users will typically work with wav files, however, as opposed to mp3 files, or \texttt{Wave} objects.
-To be consistent with this typical approach, we will save the two clips and the survey as wav files in the working directory.
+To be consistent with this typical approach, we will save the two clips and the survey as wav files\footnote{
+  Here, we will use a temporary directory, but for your own recordings a more permanent location is better.
+}.
 We'll include a made-up date in the name for the survey file, since that is one way to determine ``absolute'' times for detections\footnote{
   The other option is to use the modification date of the survey file, which clearly would be wrong here, since we just created it.
 }.
 
 <<>>=
-writeWave(btnw,"btnw.wav")
-writeWave(oven,"oven.wav")
-writeWave(survey,"survey2010-12-31_120000_EST.wav")
+btnw.fp<-file.path(tempdir(),"btnw.wav")
+oven.fp<-file.path(tempdir(),"oven.wav")
+survey.fp<-file.path(tempdir(),"survey2010-12-31_120000_EST.wav")
+writeWave(btnw, btnw.fp)
+writeWave(oven, oven.fp)
+writeWave(survey, survey.fp)
 @
 
 \section{Spectrogram cross correlation}
@@ -127,7 +134,7 @@ The easiest way to create a correlation template is to call up \texttt{makeCorTe
 This function carries out a Fourier transform, and, by default, saves amplitude (volume) data for each cell within the resulting frequency-by-time matrix.
 
 <<>>=
-wct1<-makeCorTemplate("btnw.wav")
+wct1<-makeCorTemplate(btnw.fp)
 @
 
 The \texttt{makeCorTemplate} function displays a spectrogram of the recording\footnote{
@@ -157,7 +164,7 @@ For a complete version of this vignette, visit the \href{http://www.uvm.edu/rsen
 }.
 
 <<fig.keep="none">>=
-wct1<-makeCorTemplate("btnw.wav",name="w1")
+wct1<-makeCorTemplate(btnw.fp,name="w1")
 wct1
 @
 
@@ -166,20 +173,20 @@ Setting time and frequency limits is one of simplest, and may be necessary when 
 We'll make a new template that uses the \texttt{t.lim} and \texttt{frq.lim} arguments to focus on a particular section within the song.
 
 <<>>=
-wct2<-makeCorTemplate("btnw.wav",t.lim=c(1.5,2.1),frq.lim=c(4.2,5.6),name="w2")
+wct2<-makeCorTemplate(btnw.fp,t.lim=c(1.5,2.1),frq.lim=c(4.2,5.6),name="w2")
 wct2
 @
 
 Let's make two templates with the ovenbird recording as well.
 
 <<fig.keep='none'>>=
-oct1<-makeCorTemplate("oven.wav",t.lim=c(1,4),frq.lim=c(1,11),name="o1")
+oct1<-makeCorTemplate(oven.fp,t.lim=c(1,4),frq.lim=c(1,11),name="o1")
 @
 
 For the next template, we'll use the \texttt{dens} argument to reduce the size of the template--that is, the number of points included.
 
 <<fig.keep='none'>>=
-oct2<-makeCorTemplate("oven.wav",t.lim=c(1,4),frq.lim=c(1,11),dens=0.1,name="o2")
+oct2<-makeCorTemplate(oven.fp,t.lim=c(1,4),frq.lim=c(1,11),dens=0.1,name="o2")
 @
 
 Here, our template will include \textit{approximately} one-tenth of all the spectrogram points.
@@ -210,7 +217,7 @@ This is a three-step process: we first calculate correlation score between the t
 Correlation scores are calculated with \texttt{corMatch}.
 
 <<>>=
-cscores<-corMatch("survey2010-12-31_120000_EST.wav",ctemps)
+cscores<-corMatch(survey.fp,ctemps)
 @
 
 This particular example should run in a few seconds, but \texttt{corMatch} can take much longer for long surveys
@@ -371,7 +378,7 @@ With the default option, the spectrogram is updated each time the value of \text
 Here, we'll set the cutoff directly in the function call, based on earlier trials.
 
 <<>>=
-wbt1<-makeBinTemplate("btnw.wav",amp.cutoff=-40,name="w1")
+wbt1<-makeBinTemplate(btnw.fp,amp.cutoff=-40,name="w1")
 @
 
 Time and frequency limits can be set as with \texttt{makeCorTemplate}.
@@ -380,7 +387,7 @@ Although the resulting plot isn't shown here, again, to keep this file size down
 }.
 
 <<fig.keep='none'>>=
-wbt2<-makeBinTemplate("btnw.wav",amp.cutoff=-30,t.lim=c(1.5,2.1),frq.lim=c(4.2,5.6),buffer=2,name="w2")
+wbt2<-makeBinTemplate(btnw.fp,amp.cutoff=-30,t.lim=c(1.5,2.1),frq.lim=c(4.2,5.6),buffer=2,name="w2")
 @
 
 The \texttt{amp.cutoff} and \texttt{buffer} values used above are based on trial-and-error not shown here. 
@@ -388,8 +395,8 @@ The \texttt{amp.cutoff} and \texttt{buffer} values used above are based on trial
 Let's also make two ovenbird templates, with and without a buffer.
 
 <<fig.keep='none'>>=
-obt1<-makeBinTemplate("oven.wav",amp.cutoff=-20,t.lim=c(1,4),frq.lim=c(1,11),name="o1")
-obt2<-makeBinTemplate("oven.wav",amp.cutoff=-17,t.lim=c(1,4),frq.lim=c(1,11),buffer=2,name="o2")
+obt1<-makeBinTemplate(oven.fp,amp.cutoff=-20,t.lim=c(1,4),frq.lim=c(1,11),name="o1")
+obt2<-makeBinTemplate(oven.fp,amp.cutoff=-17,t.lim=c(1,4),frq.lim=c(1,11),buffer=2,name="o2")
 @
 
 Binary templates are combined with \texttt{combineBinTemplates}.
@@ -404,7 +411,7 @@ Scores are calculated using \texttt{binMatch}, which is analogous to \texttt{cor
 As with \texttt{corMatch}, the output from this function is a \texttt{templateScores} object.
 
 <<>>=
-bscores<-binMatch("survey2010-12-31_120000_EST.wav",btemps)
+bscores<-binMatch(survey.fp,btemps)
 @
 
 From this point on, objects created by binary point matching are identical to those made with spectrogram cross correlation.

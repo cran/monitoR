@@ -53,16 +53,30 @@ Sasha D. Hafner
 }
 
 \examples{
-# First create a template list
+# Load data
 data(btnw)
-writeWave(btnw,"btnw.wav")
-ctemp1<-makeCorTemplate("btnw.wav",name="w1")
+data(oven)
+
+# Write Wave objects to file (temporary directory used here)
+btnw.fp<-file.path(tempdir(),"btnw.wav")
+oven.fp<-file.path(tempdir(),"oven.wav")
+writeWave(btnw, btnw.fp)
+writeWave(oven, oven.fp)
+
+# Correlation example
+# Create two correlation templates
+wct<-makeCorTemplate(btnw.fp, t.lim=c(1.5, 2.1), frq.lim=c(4.2, 5.6), name="w")
+oct<-makeCorTemplate(oven.fp, t.lim=c(1, 4), frq.lim=c(1, 11), dens=0.1, name="o")
+
+# Combine them
+ctemps<-combineCorTemplates(wct, oct)
 
 # Then for a quick summary:
-ctemp1
+ctemps
 
-# Or, using summary (although there is no reason to do so:)
-summary(ctemp1)
+# Clean up (only because these files were created in these examples)
+file.remove(btnw.fp)
+file.remove(oven.fp)
 }
 
 \keyword{methods}

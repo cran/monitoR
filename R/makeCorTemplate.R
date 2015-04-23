@@ -1,5 +1,5 @@
 # For making correlation templates
-# Modified: 2014 MAR 29
+# Modified: 2015 APR 2
 
 makeCorTemplate <-
 function(
@@ -16,16 +16,29 @@ function(
    wl=512,                                       # Window length for spectro
    ovlp=0,                                       # % overlap between windows for spectro
    wn='hanning',                                 # Window type for spectro
+   write.wav=FALSE,                              # Set to TRUE to allow writing clip wave objects to file
    ...
 ){
 
+   # Check some arguments
+   if(select%in%c("cell","click") & dens<1) 
+      warning("dens argument ignored for select=\"click\"",immediate.=TRUE)
+   if(dens<0.0001 | dens>1) {
+      warning("dens adjusted to 1.0",immediate.=TRUE)
+      dens<-1
+   }
+ 
    # Creates a wav file for clip if it isn't already a file
-   clip<-getClip(clip,name=deparse(substitute(clip)))
+   clip<-getClip(clip,name=deparse(substitute(clip)),write.wav=write.wav)
    clip.path<-clip
    clip<-readClip(clip)
 
    # Trim clip
-   if(is.na(t.lim[1])) {t.lim<-c(0,Inf)} else {clip<-cutw(clip,from=t.lim[1],to=t.lim[2])}
+   if(is.na(t.lim[1])) {
+     t.lim<-c(0,Inf)
+   } else {
+     clip<-cutw(clip,from=t.lim[1],to=t.lim[2])
+   }
    samp.rate<-clip@samp.rate
    
    # Fourier transform
@@ -102,11 +115,10 @@ function(
             # First find positions within the matrix that are within the rectangle
             frq.in.rect<-which.frq.bins<pos1$y & which.frq.bins>pos2$y
             x.in.rect<-which.t.bins>pos1$x & which.t.bins<pos2$x
-            # Find positions of cells within the dens grid
-            frq.in.grid<-which.frq.bins %in% seq(min(which.frq.bins),max(which.frq.bins),ceiling(1/sqrt(dens)))
-            x.in.grid<-which.t.bins %in% seq(min(which.t.bins),max(which.t.bins),ceiling(1/sqrt(dens)))
+
             # Set cells that meet criteria to 1 in bin.amp
-            on.mat[frq.in.rect & frq.in.grid,x.in.rect & x.in.grid]<-1
+            on.mat[frq.in.rect,x.in.rect]<-on.mat[frq.in.rect,x.in.rect]+sample(c(1,0),length(on.mat[frq.in.rect,x.in.rect]),TRUE,c(dens,1-dens))
+            on.mat[on.mat>1]<-1
 
             # Then find locations of all selected cells within rectangle
             pts<-which(on.mat==1,arr.ind=TRUE)
@@ -149,18 +161,17 @@ function(
             # Determine if this is a horizontal or vertical line
             if(abs(pos2$y - pos1$y) < abs(pos2$x - pos1$x)) {
             # horizontal
-               frq.in.grid<-frq.in.line<-which.frq.bins==round(pos1$y)
+               frq.in.line<-which.frq.bins==round(pos1$y)
                x.in.line<-which.t.bins>pos1$x & which.t.bins<pos2$x
-               x.in.grid<-which.t.bins %in% seq(min(which.t.bins),max(which.t.bins),ceiling(1/dens))
             } else {
             # Vertical
-               x.in.grid<-x.in.line<-which.t.bins==round(pos1$x)
+               x.in.line<-which.t.bins==round(pos1$x)
                frq.in.line<-which.frq.bins>pos2$y & which.frq.bins<pos1$y
-               frq.in.grid<-which.frq.bins %in% seq(min(which.frq.bins),max(which.frq.bins),ceiling(1/dens))
             }               
 
             # Set cells that meet criteria to 1 in bin.amp
-            on.mat[frq.in.line & frq.in.grid,x.in.line & x.in.grid]<-1
+            on.mat[frq.in.line,x.in.line]<-on.mat[frq.in.line,x.in.line]+sample(c(1,0),length(on.mat[frq.in.line,x.in.line]),TRUE,c(dens,1-dens))
+            on.mat[on.mat>1]<-1
 
             # Then find locations of all selected cells within rectangle
             pts<-which(on.mat==1,arr.ind=TRUE)
@@ -189,12 +200,9 @@ function(
       cat('\nAutomatic point selection.\n')
 
       # On cells first
-      # Find cells in grid
-      frq.in.grid<-which.frq.bins %in% seq(min(which.frq.bins),max(which.frq.bins),ceiling(1/sqrt(dens)))
-      x.in.grid<-which.t.bins %in% seq(min(which.t.bins),max(which.t.bins),ceiling(1/sqrt(dens)))
       # Set cells that meet criteria to 1 in bin.amp
-      on.mat[frq.in.grid,x.in.grid]<-1
-      
+      on.mat<-on.mat+sample(c(1,0),length(on.mat),TRUE,c(dens,1-dens))
+
       # Then find locations of 
       pts<-which(on.mat==1,arr.ind=TRUE)
       pts<-pts[,2:1]

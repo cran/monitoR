@@ -18,7 +18,7 @@ dbUploadResult(detection.obj, which.one, what = "detections",
   \item{db.name}{Name of the ODBC connector data source corresponding to the acoustics database.}
   \item{uid}{User ID to allow ODBC connector to connect to database, if not present in ODBC connector.}
   \item{pwd}{Password to allow ODBC connector to connect to database, if not present in ODBC connector.}
-  \item{analysis.type}{Character value identifying analysis type, in c("BIN","COR").  Some partial matching is performed.}
+  \item{analysis.type}{Character value identifying analysis type, in c("BIN", "COR").  Some partial matching is performed.}
   \item{analyst}{Numerical key value corresponding to the user's tblPerson.pkPersonID value in the acoustics database.}
   \item{\dots}{Additional arguments to \code{RODBC::odbcConnect}.}
 }
@@ -42,21 +42,29 @@ Jon Katz
 }
 
 \examples{
+# Load data
 data(btnw)
-writeWave(btnw,"btnw.wav")
 data(survey)
-writeWave(survey,"survey.wav")
+
+# Write Wave objects to file (temporary directory used here)
+btnw.fp<-file.path(tempdir(),"btnw.wav")
+survey.fp<-file.path(tempdir(),"survey2010-12-31_120000_EST.wav")
+writeWave(btnw, btnw.fp)
+writeWave(survey, survey.fp)
+
 # Template construction
 b4<-makeBinTemplate(
-    "btnw.wav",
-    frq.lim=c(2,8),
+    btnw.fp,
+    frq.lim=c(2, 8),
     select="auto",
     name="b4",
     buffer=4,
     amp.cutoff=-31,
     binary=TRUE)
+
 # Binary point matching
-scores<-binMatch(survey="survey.wav",templates=b4,time.source='fileinfo')
+scores<-binMatch(survey=survey.fp, templates=b4, time.source='fileinfo')
+
 # Isolate peaks
 pks<-findPeaks(scores)
 
@@ -74,6 +82,10 @@ dbUploadResult(
     pwd = "07H23BBM", 
     analysis.type = "BIN", 
     analyst = 1)}
+
+# Clean up (only because these files were created in these examples)
+file.remove(btnw.fp)
+file.remove(survey.fp)
 }
 
 \keyword{database}

@@ -10,17 +10,15 @@ dbDownloadResult<-function(
     FFTwl,                      # optional, for selecting templates
     FFTwn,                      # optional, for selecting templates
     FFTovlp,                    # optional, for selecting templates
-    ...						    # Additional arguments to sqlQuery
+    ...						    # Additional arguments to RODBC::sqlQuery
     ){
     
     start.time<-Sys.time()
-    
-    require(RODBC)
       
     # open the database connection
-    if(missing(uid) && missing(pwd)) {dbCon<-odbcConnect(db.name)
-    } else if(missing(pwd)) {dbCon<-odbcConnect(db.name,pwd)
-    } else dbCon<-odbcConnect(db.name,uid,pwd)
+    if(missing(uid) && missing(pwd)) {dbCon<-RODBC::odbcConnect(db.name)
+    } else if(missing(pwd)) {dbCon<-RODBC::odbcConnect(db.name,pwd)
+    } else dbCon<-RODBC::odbcConnect(db.name,uid,pwd)
     # Establish a cleanup procedure
     on.exit(close(dbCon))
     # Read in survey
@@ -42,13 +40,13 @@ dbDownloadResult<-function(
 	# make a new variable to record the names of the templates that detected the hits
 	templateID<-templateNames(templates)
 	# get list of templates
-	template.dat<-sqlQuery(dbCon,paste0("Select `pkTemplateID`,`fldTemplateName` FROM `tblTemplate` WHERE `fldTemplateName` = '", paste0(templateID,collapse="' OR `fldTemplateName` = '"),"'")) 
+	template.dat<-RODBC::sqlQuery(dbCon,paste0("Select `pkTemplateID`,`fldTemplateName` FROM `tblTemplate` WHERE `fldTemplateName` = '", paste0(templateID,collapse="' OR `fldTemplateName` = '"),"'")) 
 	# replace template names in new variable with fkTemplateIDs
 	for (i in 1:length(templateID)){
 	    templateID[i]<-template.dat$pkTemplateID[template.dat$fldTemplateName==templateID[i]]
 	}
 	# get list of surveys, based on fldSurveyName
-	surveyID<-sqlQuery(dbCon,paste0("Select `pkSurveyID`,`fldSurveyName` FROM `tblSurvey` WHERE `fldSurveyName` = '",survey,"'")) 
+	surveyID<-RODBC::sqlQuery(dbCon,paste0("Select `pkSurveyID`,`fldSurveyName` FROM `tblSurvey` WHERE `fldSurveyName` = '",survey,"'")) 
 	# replace survey names in with fkSurveyIDs
 	surveyID<-surveyID[surveyID['fldSurveyName']==survey,'pkSurveyID']           
     survey.data<-score.L<-peaks.L<-detections.L<-wl<-ovlp<-wn<-list()
@@ -71,14 +69,14 @@ dbDownloadResult<-function(
 		survey.data[[i]]<-list(amp=survey.spec$amp,t.bins=t.bins,frq.bins=frq.bins)
 		cat('\nDownloading ',templateNames(templates)[i],'\n')
 		query<-paste0("SELECT `fldDateTime`, `fldTimeZone`, `fldTime`, `fldOnAmp`, `fldOffAmp`, `fldScore` FROM `tblResult` WHERE `fkSurveyID` = ", surveyID," AND `fkTemplateID` = ",templateID[i])
-#		score.L[[i]]<-sqlQuery(dbCon,query,...)
+#		score.L[[i]]<-RODBC::sqlQuery(dbCon,query,...)
 #		date.time<-paste(score.L[[i]][,'fldDateTime'],score.L[[i]][,'fldTimeZone'])
 #		score.L[[i]]['fldDateTime']<-date.time
 #		score.L[[i]]<-score.L[[i]][,-2]
 #		names(score.L[[i]])<-c("date.time","time","score")
 #		peaks.L[[i]]<-score.L[[i]]
         score.L[[i]]<-data.frame("date.time"=NA,"time"=NA,"score"=NA)
-		peaks.L[[i]]<-sqlQuery(dbCon,query,...) #
+		peaks.L[[i]]<-RODBC::sqlQuery(dbCon,query,...) #
 		date.time<-paste(peaks.L[[i]][,'fldDateTime'],peaks.L[[i]][,'fldTimeZone']) #
 		peaks.L[[i]]['fldDateTime']<-date.time #
 		peaks.L[[i]]<-peaks.L[[i]][,-2] #

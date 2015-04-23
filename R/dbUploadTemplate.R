@@ -25,11 +25,10 @@ dbUploadTemplate<-function(
     } else 
     	stop('Did not recognize type, was it BIN or COR?')
     
-    require (RODBC)
     # open the database connection
-    if(missing(uid) && missing(pwd)) {dbCon<-odbcConnect(db.name,...)
-    } else if(missing(pwd)) {dbCon<-odbcConnect(db.name,pwd,...)
-    } else dbCon<-odbcConnect(db.name,uid,pwd,...)
+    if(missing(uid) && missing(pwd)) {dbCon<-RODBC::odbcConnect(db.name,...)
+    } else if(missing(pwd)) {dbCon<-RODBC::odbcConnect(db.name,pwd,...)
+    } else dbCon<-RODBC::odbcConnect(db.name,uid,pwd,...)
     
     # Establish a cleanup procedure
     on.exit(close(dbCon))
@@ -40,7 +39,7 @@ dbUploadTemplate<-function(
     # Check the species.code vector length
     if(length(species.code)>1 & length(species.code)!=length(names(template.L))) stop('You entered ',length(species.code),' species codes but are uploading ',length(names(template.L)),' templates, this can\'t be right.')
     # download relevant portions of tblSpecies to lookup fkSpeciesID
-    species<-sqlQuery(dbCon, paste("SELECT `pkSpeciesID`, `fldSpeciesCode` FROM `tblSpecies` WHERE `fldSpeciesCode` = '",paste(species.code, sep="", collapse="' OR `fldSpeciesCode` = '"),"'",sep=""))
+    species<-RODBC::sqlQuery(dbCon, paste("SELECT `pkSpeciesID`, `fldSpeciesCode` FROM `tblSpecies` WHERE `fldSpeciesCode` = '",paste(species.code, sep="", collapse="' OR `fldSpeciesCode` = '"),"'",sep=""))
                 
     # open a vector to hold fkSpeciesIDs
     speciesID<-NULL
@@ -88,18 +87,18 @@ dbUploadTemplate<-function(
     # Alert user
     message('Uploading...')      
     # push the query through the open connection to the database     
-    status <- sqlQuery(dbCon,query)
+    status <- RODBC::sqlQuery(dbCon,query)
     # Alert user
     message('Cleaning up...')    
     # Save space in the database and future read vector; lose the white space
     query<-paste("UPDATE `tblTemplate` SET `fldPtOnT` = REPLACE( `fldPtOnT` , ' ' , '' ), `fldPtOnFrq` = REPLACE( `fldPtOnFrq` , ' ' , '' ), `fldPtOffT` = REPLACE( `fldPtOffT` , ' ' , '' ), `fldPtOffFrq` = REPLACE( `fldPtOffFrq` , ' ' , '' ), `fldPtsT` = REPLACE( `fldPtsT` , ' ' , '' ), `fldPtsFrq` = REPLACE( `fldPtsFrq` , ' ' , '' ), `fldPtsAmp` = REPLACE( `fldPtsAmp` , ' ' , '' ) WHERE `fldTemplateName` = '",names(template.L),"'",sep="")
-    lapply(query, function(x) sqlQuery(dbCon,x))
+    lapply(query, function(x) RODBC::sqlQuery(dbCon,x))
     # And drop the newline too
     query<-paste("UPDATE `tblTemplate` SET `fldPtOnT` = REPLACE( `fldPtOnT` , '\n' , '' ), `fldPtOnFrq` = REPLACE( `fldPtOnFrq` , '\n' , '' ), `fldPtOffT` = REPLACE( `fldPtOffT` , '\n' , '' ), `fldPtOffFrq` = REPLACE( `fldPtOffFrq` , '\n' , '' ), `fldPtsT` = REPLACE( `fldPtsT` , '\n' , '' ), `fldPtsFrq` = REPLACE( `fldPtsFrq` , '\n' , '' ), `fldPtsAmp` = REPLACE( `fldPtsAmp` , '\n' , '' ) WHERE `fldTemplateName` = '",names(template.L),"'",sep="")
-    lapply(query, function(x) sqlQuery(dbCon,x))
+    lapply(query, function(x) RODBC::sqlQuery(dbCon,x))
     # Might as well drop carriage returns too
     query<-paste("UPDATE `tblTemplate` SET `fldPtOnT` = REPLACE( `fldPtOnT` , '\r' , '' ), `fldPtOnFrq` = REPLACE( `fldPtOnFrq` , '\r' , '' ), `fldPtOffT` = REPLACE( `fldPtOffT` , '\r' , '' ), `fldPtOffFrq` = REPLACE( `fldPtOffFrq` , '\r' , '' ), `fldPtsT` = REPLACE( `fldPtsT` , '\r' , '' ), `fldPtsFrq` = REPLACE( `fldPtsFrq` , '\r' , '' ), `fldPtsAmp` = REPLACE( `fldPtsAmp` , '\r' , '' ) WHERE `fldTemplateName` = '",names(template.L),"'",sep="")
-    lapply(query, function(x) sqlQuery(dbCon,x))
+    lapply(query, function(x) RODBC::sqlQuery(dbCon,x))
     
     # report to user
     message(if(is.na(status[1])) {paste('Done! Upload time:',round(Sys.time()-start.time,2),'seconds')

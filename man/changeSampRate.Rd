@@ -9,7 +9,7 @@ Downsample or upsample \code{\link[tuneR]{Wave}} objects by specifying either a 
 }
 \usage{
 changeSampRate(wchange, wkeep = NULL, sr.new = wkeep@samp.rate, dither = FALSE, 
-dith.noise = 32)
+               dith.noise = 32)
 
 }
 \arguments{

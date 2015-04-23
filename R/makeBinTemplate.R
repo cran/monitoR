@@ -1,5 +1,5 @@
 # For making binary templates
-# Modified: 2014 MAR 29
+# Modified: 2015 APR 2
 
 makeBinTemplate <-
 function(
@@ -25,6 +25,7 @@ function(
    wl=512,             # Window length for spectro
    ovlp=0,             # % overlap between windows for spectro
    wn="hanning",       # Window type for spectro
+   write.wav=FALSE,    # Set to TRUE to allow writing clip wave objects to file
    ...                 # Additional arguments to spectro
 ){
 
@@ -54,7 +55,7 @@ function(
    if(!select%in%c("cell","click","auto","rectangle","rect")) stop("select argument, ",select,", not recognized")
 
    # Creates a wav file for any clip elements that are not already files
-   clip<-getClip(clip,name=deparse(substitute(clip)))
+   clip<-getClip(clip,name=deparse(substitute(clip)),write.wav=write.wav)
 
 ##### Single clip ##### 
    if(length(clip)==1) { 
@@ -62,7 +63,11 @@ function(
       clip<-readClip(clip)
 
       # Trim clip
-      if(is.na(t.lim[1])) t.lim<-c(0,Inf) else clip<-cutw(clip,from=t.lim[1],to=t.lim[2])
+      if(is.na(t.lim[1])) {
+	t.lim<-c(0,Inf) 
+      } else {
+	  clip<-cutw(clip,from=t.lim[1],to=t.lim[2])
+      }
       samp.rate<-clip@samp.rate
       first.t.bin<-t.lim[1]
       # Fourier transform
@@ -215,14 +220,11 @@ function(
                frq.in.rect<-which.frq.bins<pos1$y & which.frq.bins>pos2$y
                x.in.rect<-which.t.bins>pos1$x & which.t.bins<pos2$x
 
-               # Find positions of cells within the dens grid
-               frq.in.grid<-which.frq.bins %in% seq(min(which.frq.bins),max(which.frq.bins),ceiling(1/sqrt(dens)))
-               x.in.grid<-which.t.bins %in% seq(min(which.t.bins),max(which.t.bins),ceiling(1/sqrt(dens)))
-
                # Set cells that meet criteria to 1 in on.mat
                temp.mat<-on.mat
-               temp.mat[frq.in.rect & frq.in.grid,x.in.rect & x.in.grid]<-bin.amp[frq.in.rect & frq.in.grid,x.in.rect & x.in.grid]
-               on.mat[temp.mat==1]<-1 
+               temp.mat[frq.in.rect,x.in.rect]<-bin.amp[frq.in.rect,x.in.rect]
+               temp.mat[temp.mat==1]<-sample(c(1,0),sum(temp.mat==1),TRUE,c(dens,1-dens))
+               on.mat[temp.mat==1]<-1
 
                # Then find locations of all high amplitude cells within rectangle
                pts<-which(on.mat==1,arr.ind=TRUE)
@@ -256,9 +258,7 @@ function(
                # First find positions within the matrix that are within the rectangle
                frq.in.rect<-which.frq.bins<pos1$y & which.frq.bins>pos2$y
                x.in.rect<-which.t.bins>pos1$x & which.t.bins<pos2$x
-               frq.in.grid<-which.frq.bins %in% seq(min(which.frq.bins),max(which.frq.bins),ceiling(1/sqrt(dens)))
-               x.in.grid<-which.t.bins %in% seq(min(which.t.bins),max(which.t.bins),ceiling(1/sqrt(dens)))
-
+               
                # Find cells with high binary cells within buffer distance--these will have 0 in buff.amp
                # This loop is a bit slow
                buff.amp<-matrix(TRUE,nrow=n.frq.bins,ncol=n.t.bins)
@@ -272,9 +272,10 @@ function(
                   }
                }
 
-               # Set cells that meet all criteria to 3 in bin.amp
+               # Set cells that meet all criteria to 1 in off.mat
                temp.mat<-off.mat + 1
-               temp.mat[frq.in.rect & frq.in.grid,x.in.rect & x.in.grid]<-bin.amp[frq.in.rect & frq.in.grid,x.in.rect & x.in.grid]
+               temp.mat[frq.in.rect,x.in.rect]<-bin.amp[frq.in.rect,x.in.rect]
+               temp.mat[temp.mat==0]<-sample(c(1,0),sum(temp.mat==0),TRUE,c(1-dens,dens)) # Note that probability order is reversed compared to "on" points
                off.mat[temp.mat==0 & buff.amp]<-1 
 
                # Then find locations of cells
@@ -300,14 +301,8 @@ function(
          image(x=which.t.bins,y=which.frq.bins,t(bin.amp),col=bin.col,zlim=c(0,1),add=TRUE)
 
          # On cells first
-         # Find cells in grid
-         frq.in.grid<-which.frq.bins %in% seq(min(which.frq.bins),max(which.frq.bins),ceiling(1/sqrt(dens)))
-         x.in.grid<-which.t.bins %in% seq(min(which.t.bins),max(which.t.bins),ceiling(1/sqrt(dens)))
-
-         # Set cells that meet criteria to 1 in on.mat
-         temp.mat<-on.mat
-         temp.mat[frq.in.grid,x.in.grid]<-bin.amp[frq.in.grid,x.in.grid]
-         on.mat[temp.mat==1]<-1 
+         # Set cells that meet criteria to 1 in on.mat, incorporating random cell selection from among these cells based on dens
+         on.mat[bin.amp==1]<-sample(c(1,0),sum(bin.amp==1),TRUE,c(dens,1-dens))
 
          # Then find locations of all high binary cells 
          pts<-which(on.mat==1,arr.ind=TRUE)
@@ -317,7 +312,7 @@ function(
          pt.on<-pts
 
          # Off cells next
-         # Find cells with high binary cells within buffer distance--these will have 0 in buff.amp
+         # Find cells with high binary cells within buffer distance--these will have FALSE in buff.amp
          buff.amp<-matrix(TRUE,nrow=n.frq.bins,ncol=n.t.bins)
          if(buffer>0) {
             for(i in 1:n.frq.bins) {
@@ -329,10 +324,9 @@ function(
             }
          }
 
-         # Set cells that meet criteria to 1 in off.mat
-         temp.mat<-off.mat + 1
-         temp.mat[frq.in.grid,x.in.grid]<-bin.amp[frq.in.grid,x.in.grid]
-         off.mat[temp.mat==0 & buff.amp]<-1 
+         # Set cells that meet criteria to 1 in off.mat, incorporating random point selection based on dens
+	 # Remember TRUE cells in buff.amp are outside the buffer (and so OK for "off" cells)
+         off.mat[bin.amp==0 & buff.amp]<-sample(c(1,0),sum(bin.amp==0 & buff.amp),TRUE,c(dens,1-dens)) # Here 1 in off.mat means cell is "off" cell
 
          # Then find locations of all low binary cells 
          pts<-which(off.mat==1,arr.ind=TRUE)
@@ -576,13 +570,11 @@ function(
                # First find positions within the matrix that are within the rectangle
                frq.in.rect<-which.frq.bins<pos1$y & which.frq.bins>pos2$y
                x.in.rect<-which.t.bins>pos1$x & which.t.bins<pos2$x
-               # Find positions of cells within the dens grid
-               frq.in.grid<-which.frq.bins %in% seq(min(which.frq.bins),max(which.frq.bins),ceiling(1/sqrt(dens)))
-               x.in.grid<-which.t.bins %in% seq(min(which.t.bins),max(which.t.bins),ceiling(1/sqrt(dens)))
 
                # Set cells that meet criteria to 1 in on.mat
                temp.mat<-on.mat
-               temp.mat[frq.in.rect & frq.in.grid,x.in.rect & x.in.grid]<-mat3[frq.in.rect & frq.in.grid,x.in.rect & x.in.grid]
+               temp.mat[frq.in.rect,x.in.rect]<-mat3[frq.in.rect,x.in.rect]
+               if(dens<1) temp.mat[temp.mat==3]<-sample(c(3,0),sum(temp.mat==3),TRUE,c(dens,1-dens))
                on.mat[temp.mat==3]<-1
                
                # Then find locations of all overlapped cells within rectangle
@@ -617,9 +609,7 @@ function(
                # First find positions within the matrix that are within the rectangle
                frq.in.rect<-which.frq.bins<pos1$y & which.frq.bins>pos2$y
                x.in.rect<-which.t.bins>pos1$x & which.t.bins<pos2$x
-               frq.in.grid<-which.frq.bins %in% seq(min(which.frq.bins),max(which.frq.bins),ceiling(1/sqrt(dens)))
-               x.in.grid<-which.t.bins %in% seq(min(which.t.bins),max(which.t.bins),ceiling(1/sqrt(dens)))
-
+               
                # Find cells with high binary cells within buffer distance--these will have FALSE in buff.amp
                # This loop is a bit slow
                buff.amp<-matrix(TRUE,nrow=n.frq.bins,ncol=n.t.bins)
@@ -635,7 +625,8 @@ function(
 
                # Set cells that meet all criteria to 1 in off.mat
                temp.mat<-off.mat + 1
-               temp.mat[frq.in.rect & frq.in.grid,x.in.rect & x.in.grid]<-mat3[frq.in.rect & frq.in.grid,x.in.rect & x.in.grid]
+               temp.mat[frq.in.rect,x.in.rect]<-mat3[frq.in.rect,x.in.rect]
+               if(dens<1) temp.mat[temp.mat==0]<-sample(c(1,0),sum(temp.mat==0),TRUE,c(1-dens,dens)) # Here a 1 in temp.mat mean cell is not "off" cell, so prob values reversed from above
                off.mat[temp.mat==0 & buff.amp]<-1 
                
                # Then find locations of cells
@@ -658,14 +649,8 @@ function(
          cat("\nAutomatic point selection.\n")
 
          # On cells first
-         # Find cells in grid
-         frq.in.grid<-which.frq.bins %in% seq(min(which.frq.bins),max(which.frq.bins),ceiling(1/sqrt(dens)))
-         x.in.grid<-which.t.bins %in% seq(min(which.t.bins),max(which.t.bins),ceiling(1/sqrt(dens)))
-
-         # Set cells that meet criteria to 1 in on.mat
-         temp.mat<-on.mat
-         temp.mat[frq.in.grid,x.in.grid]<-mat3[frq.in.grid,x.in.grid]
-         on.mat[temp.mat==3]<-1 
+         # Set cells that meet criteria to 1 in on.mat, incorporating random selection based on dens
+         on.mat[mat3==3]<-sample(c(1,0),sum(mat3==3),TRUE,c(dens,1-dens))
 
          # Then find locations of all high cells 
          pts<-which(on.mat==1,arr.ind=TRUE)
@@ -690,9 +675,7 @@ function(
          }
 
          # Set cells that meet criteria to 1 in off.mat
-         temp.mat<-off.mat + 1
-         temp.mat[frq.in.grid,x.in.grid]<-mat3[frq.in.grid,x.in.grid]
-         off.mat[temp.mat==0 & buff.amp]<-1 
+         off.mat[mat3==0 & buff.amp]<-sample(c(1,0),sum(mat3==0 & buff.amp),TRUE,c(dens,1-dens))
                
          # Then find locations of cells
          pts<-which(off.mat==1,arr.ind=TRUE)

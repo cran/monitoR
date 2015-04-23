@@ -8,8 +8,9 @@ Collects a variety of metadata about recordings that will be acoustic surveys an
 }
 \usage{
 fileCopyRename(files, from = ".", to, csv.dir = to, csv.name, loc.prefix, ext, 
-CardRecorderID = NA, kaleidoscope = TRUE, split.channels = FALSE, 
-metadata.only = FALSE, full.survey.names = FALSE, rename = TRUE, copy = TRUE)
+hours.offset = 0, CardRecorderID = NA, kaleidoscope = TRUE, 
+split.channels = FALSE, metadata.only = FALSE, full.survey.names = FALSE, 
+rename = TRUE, copy = TRUE)
 }
 
 \arguments{
@@ -18,8 +19,9 @@ metadata.only = FALSE, full.survey.names = FALSE, rename = TRUE, copy = TRUE)
   \item{to}{Directory where surveys will be placed after extraction.}
   \item{csv.dir}{Directory where csv file of survey metadata will be saved; defaults to the \code{to} directory.}
   \item{csv.name}{Name to save csv file of metadata, character value ending in .csv}
-  \item{loc.prefix}{Six-character value identifying the location at which the recording was made.  Will be used in the file name (see Details) and the csv file name.  Must be in tblLocation.fldLocationName in the acoustics database.}
-  \item{ext}{Character.  The file extension defining the type of files to move, rename, and collect metadata on.  Typically in \code{c("wav","wac")}}
+  \item{loc.prefix}{Character value identifying the location at which the recording was made.  Will be used in the file name (see Details) and the csv file name.  Must be in tblLocation.fldLocationName in the acoustics database.}
+  \item{ext}{three-characters.  The file extension defining the type of files to move, rename, and collect metadata on.  Typically in \code{c("wav", "wac")}}
+  \item{hours.offset}{Hours to offset the modification time. Useful when transporting recordings across time zones, or if recorders are set in UTC/GMT but the computer is in local time.}
   \item{CardRecorderID}{Numeric key value from tblCardRecorder.pkCardRecorderID, which links the recorder that made the recording with the location it was recorded.}
   \item{kaleidoscope}{Logical. If \code{ext="wac"} files must be converted to .wav in Kaleidoscope.  Setting to \code{TRUE} anticipates the renaming by Kaleidoscope.}
   \item{split.channels}{Logical. If \code{ext="wac"} files must be converted to .wav in Kaleidoscope.  Setting to \code{TRUE} anticipates further renaming by Kaleidoscope.}
@@ -46,9 +48,10 @@ Jon Katz
 }
 \examples{
 \dontrun{
+# Not run because it will create a file in user's working directory
 data(survey)
 
-writeWave(survey,"survey.wav")
+writeWave(survey, "survey.wav")
 
 meta <- fileCopyRename(
             files="survey.wav",
