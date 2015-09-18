@@ -48,13 +48,15 @@ Classes \code{corTemplate} and \code{binTemplate} extend \code{Template}, direct
   Sasha D. Hafner
 }
 \seealso{
-  \code{\linkS4class{binTemplateList}},
-  \code{\linkS4class{corTemplateList}},
+  \code{\linkS4class{binTemplateList}}, 
+  \code{\linkS4class{corTemplateList}}, 
   \code{\linkS4class{TemplateList}}
 }
 \examples{
 showClass("Template")
+
 showClass("corTemplate")
+
 showClass("binTemplate")
 }
 \keyword{classes}

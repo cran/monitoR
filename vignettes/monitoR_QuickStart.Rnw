@@ -1,9 +1,9 @@
 \documentclass{article}
-\usepackage[margin=1.2in]{geometry}
+\usepackage[margin = 1.2in]{geometry}
 \usepackage{float}
 \usepackage{placeins}
 \usepackage{natbib}
-\usepackage[colorlinks=true,urlcolor=blue]{hyperref} % Must be loaded as the last package
+\usepackage[colorlinks = true, urlcolor = blue]{hyperref} % Must be loaded as the last package
 %\hypersetup{colorlinks}
 %\VignetteEngine{knitr::knitr}
 %\VignetteIndexEntry{monitoR Quick Start}
@@ -26,20 +26,20 @@ Jonathan Katz \\
 \maketitle
 
 
-<<setup,include=FALSE,cache=FALSE>>=
-options(useFancyQuotes=FALSE)
+<<setup, include = FALSE, cache = FALSE>>=
+options(useFancyQuotes = FALSE)
 library(knitr)
-opts_chunk$set(comment="#",out.height="4.0in",out.width="4.0in",fig.height=5.2,fig.width=5.2,fig.align="center",cache=TRUE)
-options(tidy=TRUE,width=65)
+opts_chunk$set(comment = "#", out.height = "4.0in", out.width = "4.0in", fig.height = 5.2, fig.width = 5.2, fig.align = "center", cache = TRUE)
+options(tidy = TRUE, width = 65)
 @
 
-<<echo=FALSE, warning=FALSE,error=FALSE,message=FALSE>>=
+<<echo = FALSE, warning = FALSE, error = FALSE, message = FALSE>>=
 library(tuneR)
 library(monitoR)
-#sf<-list.files('/home/sasha/Dropbox/UVMacoustic/monitoR/R',full.names=TRUE)
-#sf<-sf[!grepl("eventEval.R",sf)]
+#sf <- list.files('/home/sasha/Dropbox/UVMacoustic/monitoR/R', full.names = TRUE)
+#sf <- sf[!grepl("eventEval.R", sf)]
 #for(ff in sf) source(ff)
-#df<-list.files('/home/sasha/Dropbox/UVMacoustic/monitoR/data',full.names=TRUE)
+#df <- list.files('/home/sasha/Dropbox/UVMacoustic/monitoR/data', full.names = TRUE)
 #for(ff in df) load(ff)
 @
 
@@ -54,7 +54,7 @@ The motivation behind the development of the \texttt{monitoR} package was automa
 Here, we describe how to use \texttt{monitoR} functions to detect and identify songs from two bird species from a survey recording.
 We'll start by loading the package.
 
-<<eval=FALSE>>=
+<<eval = FALSE>>=
 library(monitoR)
 @
 
@@ -70,7 +70,7 @@ A spectrogram of the recordings can be generated using the \texttt{viewSpec} fun
   Try setting the \texttt{interactive} argument to \texttt{TRUE} for more viewing options that are useful for longer recordings.
 }.
 
-<<out.width="5.8in",fig.width=7>>=
+<<out.width = "5.8in", fig.width = 7>>=
 viewSpec(survey)
 @
 
@@ -79,7 +79,7 @@ This requires that a command-line wav player is installed.
 Here, we are using SoX.
 }.
 
-<<eval=FALSE>>=
+<<eval = FALSE>>=
 setWavPlayer("play")
 play(survey)
 @
@@ -117,9 +117,9 @@ We'll include a made-up date in the name for the survey file, since that is one 
 }.
 
 <<>>=
-btnw.fp<-file.path(tempdir(),"btnw.wav")
-oven.fp<-file.path(tempdir(),"oven.wav")
-survey.fp<-file.path(tempdir(),"survey2010-12-31_120000_EST.wav")
+btnw.fp <- file.path(tempdir(), "btnw.wav")
+oven.fp <- file.path(tempdir(), "oven.wav")
+survey.fp <- file.path(tempdir(), "survey2010-12-31_120000_EST.wav")
 writeWave(btnw, btnw.fp)
 writeWave(oven, oven.fp)
 writeWave(survey, survey.fp)
@@ -134,7 +134,7 @@ The easiest way to create a correlation template is to call up \texttt{makeCorTe
 This function carries out a Fourier transform, and, by default, saves amplitude (volume) data for each cell within the resulting frequency-by-time matrix.
 
 <<>>=
-wct1<-makeCorTemplate(btnw.fp)
+wct1 <- makeCorTemplate(btnw.fp)
 @
 
 The \texttt{makeCorTemplate} function displays a spectrogram of the recording\footnote{
@@ -163,8 +163,8 @@ In the interest of keeping this file from being too big, the figures produced by
 For a complete version of this vignette, visit the \href{http://www.uvm.edu/rsenr/vtcfwru/R/?Page=monitoR/monitoR.htm}{monitoR website}.
 }.
 
-<<fig.keep="none">>=
-wct1<-makeCorTemplate(btnw.fp,name="w1")
+<<fig.keep = "none">>=
+wct1 <- makeCorTemplate(btnw.fp, name = "w1")
 wct1
 @
 
@@ -173,20 +173,20 @@ Setting time and frequency limits is one of simplest, and may be necessary when 
 We'll make a new template that uses the \texttt{t.lim} and \texttt{frq.lim} arguments to focus on a particular section within the song.
 
 <<>>=
-wct2<-makeCorTemplate(btnw.fp,t.lim=c(1.5,2.1),frq.lim=c(4.2,5.6),name="w2")
+wct2 <- makeCorTemplate(btnw.fp, t.lim = c(1.5, 2.1), frq.lim = c(4.2, 5.6), name = "w2")
 wct2
 @
 
 Let's make two templates with the ovenbird recording as well.
 
-<<fig.keep='none'>>=
-oct1<-makeCorTemplate(oven.fp,t.lim=c(1,4),frq.lim=c(1,11),name="o1")
+<<fig.keep = 'none'>>=
+oct1 <- makeCorTemplate(oven.fp, t.lim = c(1, 4), frq.lim = c(1, 11), name = "o1")
 @
 
 For the next template, we'll use the \texttt{dens} argument to reduce the size of the template--that is, the number of points included.
 
-<<fig.keep='none'>>=
-oct2<-makeCorTemplate(oven.fp,t.lim=c(1,4),frq.lim=c(1,11),dens=0.1,name="o2")
+<<fig.keep = 'none'>>=
+oct2 <- makeCorTemplate(oven.fp, t.lim = c(1, 4), frq.lim = c(1, 11), dens = 0.1, name = "o2")
 @
 
 Here, our template will include \textit{approximately} one-tenth of all the spectrogram points.
@@ -196,7 +196,7 @@ However, \texttt{monitoR} is designed to use template lists that contain multipl
 Templates can be combined together in a single list with \texttt{combineCorTemplates}.
 
 <<>>=
-ctemps<-combineCorTemplates(wct1,wct2,oct1,oct2)
+ctemps <- combineCorTemplates(wct1, wct2, oct1, oct2)
 ctemps
 @
 
@@ -205,11 +205,11 @@ This function can be used to combine templates present in any number of correlat
 
 We can view all the templates in \texttt{ctemps} with the \texttt{plot} function.
 
-<<eval=FALSE,>>=
+<<eval = FALSE, >>=
 plot(ctemps)
 @
-%<<echo=FALSE, >>=
-%plot(ctemps,ask=FALSE)
+%<<echo = FALSE, >>=
+%plot(ctemps, ask = FALSE)
 %@
 
 We can now use our templates to look for black-throated green warbler and ovenbird songs within the \texttt{survey} recording.
@@ -217,7 +217,7 @@ This is a three-step process: we first calculate correlation score between the t
 Correlation scores are calculated with \texttt{corMatch}.
 
 <<>>=
-cscores<-corMatch(survey.fp,ctemps)
+cscores <- corMatch(survey.fp, ctemps)
 @
 
 This particular example should run in a few seconds, but \texttt{corMatch} can take much longer for long surveys
@@ -236,7 +236,7 @@ To make detections, we need to look within the correlation scores returned by \t
 These two steps are carried out with \texttt{findPeaks}.
 
 <<>>=
-cdetects<-findPeaks(cscores)
+cdetects <- findPeaks(cscores)
 @
 
 The \texttt{findPeaks} function returns \texttt{detectionList} objects, which contain all the information originally present in \texttt{templateScores} objects, plus detection results.
@@ -265,7 +265,7 @@ Instead, score cutoffs need to be determined based on template performance, typi
 Here we just have one, very short, survey, so we'll use the entire survey to determine what the score cutoff should be set to for each template.
 We can see a graphical summary of the results with the generic \texttt{plot} function.
 
-<<out.width="5.8in",fig.width=7>>=
+<<out.width = "5.8in", fig.width = 7>>=
 plot(cdetects)
 @
 
@@ -287,20 +287,20 @@ templateCutoff(ctemps)
 To change the cutoff for templates w2, o1, and o2 in the the template list \texttt{cdetects}, we can use:
 
 <<>>=
-templateCutoff(ctemps)[2:4]<-c(0.3,0.2,0.2)
+templateCutoff(ctemps)[2:4] <- c(0.3, 0.2, 0.2)
 @
 
 Or, this call does the same thing (and is perhaps less prone to mistakes):
 
 <<>>=
-templateCutoff(ctemps)<-c(w2=0.3,o1=0.2,o2=0.2)
+templateCutoff(ctemps) <- c(w2 = 0.3, o1 = 0.2, o2 = 0.2)
 ctemps
 @
 
 Or, we could even use the special name \texttt{default} to specify a default value.
 
 <<>>=
-templateCutoff(ctemps)<-c(w2=0.3,default=0.2)
+templateCutoff(ctemps) <- c(w2 = 0.3, default = 0.2)
 ctemps
 @
 
@@ -310,7 +310,7 @@ Instead, we can just change the score cutoffs in our existing \texttt{detectionL
 The detections are automatically updated when score cutoffs are changed in a \texttt{detectionList} object.
 
 <<>>=
-templateCutoff(cdetects)<-c(w2=0.3,default=0.2)
+templateCutoff(cdetects) <- c(w2 = 0.3, default = 0.2)
 @
 
 So it isn't even necessary to change \texttt{ctemps}\footnote{
@@ -327,7 +327,7 @@ Notice how the number of detections has changed for \texttt{o1} and \texttt{o2}\
 The plot produced by the call below is omitted, but it would now show a different number of detections.
 }.
 
-<<out.width="5.8in",fig.width=7,fig.keep="none">>=
+<<out.width = "5.8in", fig.width = 7, fig.keep = "none">>=
 plot(cdetects)
 @
 
@@ -337,11 +337,11 @@ Here, the omitted plot would only show results for w2 and o2.
 }.
 
 <<>>=
-cdetects<-cdetects[c("w2","o2")]
+cdetects <- cdetects[c("w2", "o2")]
 cdetects
 @
 
-<<out.width="5.8in",fig.width=7,fig.keep='none'>>=
+<<out.width = "5.8in", fig.width = 7, fig.keep = 'none'>>=
 plot(cdetects)
 @
 
@@ -378,7 +378,7 @@ With the default option, the spectrogram is updated each time the value of \text
 Here, we'll set the cutoff directly in the function call, based on earlier trials.
 
 <<>>=
-wbt1<-makeBinTemplate(btnw.fp,amp.cutoff=-40,name="w1")
+wbt1 <- makeBinTemplate(btnw.fp, amp.cutoff = -40, name = "w1")
 @
 
 Time and frequency limits can be set as with \texttt{makeCorTemplate}.
@@ -386,23 +386,23 @@ We'll also include a buffer around the ``on'' cells--cells in the buffer are exc
 Although the resulting plot isn't shown here, again, to keep this file size down.
 }.
 
-<<fig.keep='none'>>=
-wbt2<-makeBinTemplate(btnw.fp,amp.cutoff=-30,t.lim=c(1.5,2.1),frq.lim=c(4.2,5.6),buffer=2,name="w2")
+<<fig.keep = 'none'>>=
+wbt2 <- makeBinTemplate(btnw.fp, amp.cutoff = -30, t.lim = c(1.5, 2.1), frq.lim = c(4.2, 5.6), buffer = 2, name = "w2")
 @
 
 The \texttt{amp.cutoff} and \texttt{buffer} values used above are based on trial-and-error not shown here. 
 
 Let's also make two ovenbird templates, with and without a buffer.
 
-<<fig.keep='none'>>=
-obt1<-makeBinTemplate(oven.fp,amp.cutoff=-20,t.lim=c(1,4),frq.lim=c(1,11),name="o1")
-obt2<-makeBinTemplate(oven.fp,amp.cutoff=-17,t.lim=c(1,4),frq.lim=c(1,11),buffer=2,name="o2")
+<<fig.keep = 'none'>>=
+obt1 <- makeBinTemplate(oven.fp, amp.cutoff = -20, t.lim = c(1, 4), frq.lim = c(1, 11), name = "o1")
+obt2 <- makeBinTemplate(oven.fp, amp.cutoff = -17, t.lim = c(1, 4), frq.lim = c(1, 11), buffer = 2, name = "o2")
 @
 
 Binary templates are combined with \texttt{combineBinTemplates}.
 
 <<>>=
-btemps<-combineBinTemplates(wbt1,wbt2,obt1,obt2)
+btemps <- combineBinTemplates(wbt1, wbt2, obt1, obt2)
 btemps
 @
 
@@ -411,19 +411,19 @@ Scores are calculated using \texttt{binMatch}, which is analogous to \texttt{cor
 As with \texttt{corMatch}, the output from this function is a \texttt{templateScores} object.
 
 <<>>=
-bscores<-binMatch(survey.fp,btemps)
+bscores <- binMatch(survey.fp, btemps)
 @
 
 From this point on, objects created by binary point matching are identical to those made with spectrogram cross correlation.
 To find detections, use the same \texttt{findPeaks} function that we used above.
 
 <<>>=
-bdetects<-findPeaks(bscores)
+bdetects <- findPeaks(bscores)
 @
 
 And, as above, we can use the \texttt{plot} method for \texttt{detectionList} objects to view detections.
 
-<<out.width="5.8in",fig.width=7,fig.keep='none'>>=
+<<out.width = "5.8in", fig.width = 7, fig.keep = 'none'>>=
 plot(bdetects)
 @
 
@@ -434,14 +434,14 @@ The plot that is omitted below would no longer show any results for w1.
 }.
 
 <<>>=
-bdetects<-bdetects[-1]
+bdetects <- bdetects[-1]
 @
 
 <<>>=
-templateCutoff(bdetects)<-c(w2=7,default=4)
+templateCutoff(bdetects) <- c(w2 = 7, default = 4)
 @
 
-<<out.width="5.8in",fig.width=7,fig.keep='none'>>=
+<<out.width = "5.8in", fig.width = 7, fig.keep = 'none'>>=
 plot(bdetects)
 @
 
@@ -471,7 +471,7 @@ To summarize, for template matching using binary point matching one would typica
 
 The \texttt{monitoR} package includes several functions not described in this short introduction.
 \begin{itemize}
-\item For manipulating recordings directly, there are the \texttt{cutw}, \texttt{changeSampRate}, and \texttt{mp3Subsamp} functions.
+  \item For manipulating recordings directly, there are the \texttt{cutWave}\footnote{Originally named \texttt{cutw}, but recently changed.}, \texttt{changeSampRate}, and \texttt{mp3Subsamp} functions.
 \item With the \texttt{plot} methods for template list and detection list objects (used in sections \ref{sec:corMatch} and \ref{sec:binMatch} above), color palettes and other characteristics of the plots can be modified.
 \item The \texttt{viewSpec} function is capable of much more than the above examples suggest.
 It can be used interactively to view different parts of a spectrogram, or even annotate it.

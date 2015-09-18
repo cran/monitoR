@@ -7,8 +7,8 @@ Upload detection results (peaks or detections) from \code{\link{findPeaks}} dire
 }
 
 \usage{
-dbUploadResult(detection.obj, which.one, what = "detections", 
-    db.name = "acoustics", uid, pwd, analysis.type, analyst = "", ...)
+dbUploadResult(detection.obj, which.one, what = "detections", db.name = "acoustics", 
+               uid, pwd, analysis.type, analyst = "", ...)
 }
 
 \arguments{
@@ -42,33 +42,34 @@ Jon Katz
 }
 
 \examples{
+\dontrun{
+## Not run, as it requires a database to receive the upload
 # Load data
 data(btnw)
 data(survey)
 
 # Write Wave objects to file (temporary directory used here)
-btnw.fp<-file.path(tempdir(),"btnw.wav")
-survey.fp<-file.path(tempdir(),"survey2010-12-31_120000_EST.wav")
+btnw.fp <- file.path(tempdir(), "btnw.wav")
+survey.fp <- file.path(tempdir(), "survey2010-12-31_120000_EST.wav")
 writeWave(btnw, btnw.fp)
 writeWave(survey, survey.fp)
 
 # Template construction
-b4<-makeBinTemplate(
-    btnw.fp,
-    frq.lim=c(2, 8),
-    select="auto",
-    name="b4",
-    buffer=4,
-    amp.cutoff=-31,
-    binary=TRUE)
+b4 <- makeBinTemplate(
+    btnw.fp, 
+    frq.lim = c(2, 8), 
+    select = "auto", 
+    name = "b4", 
+    buffer = 4, 
+    amp.cutoff = -31, 
+    binary = TRUE)
 
 # Binary point matching
-scores<-binMatch(survey=survey.fp, templates=b4, time.source='fileinfo')
+scores <- binMatch(survey = survey.fp, templates = b4, time.source = 'fileinfo')
 
 # Isolate peaks
-pks<-findPeaks(scores)
+pks <- findPeaks(scores)
 
-\dontrun{
 #If using the 'acoustics' schema verbatim:
 dbUploadResult(detection.obj = pks, analysis.type = "BIN", analyst = 1)
 
@@ -82,10 +83,9 @@ dbUploadResult(
     pwd = "07H23BBM", 
     analysis.type = "BIN", 
     analyst = 1)}
-
-# Clean up (only because these files were created in these examples)
-file.remove(btnw.fp)
-file.remove(survey.fp)
+    
+    
+    
 }
 
 \keyword{database}

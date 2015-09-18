@@ -1,5 +1,5 @@
 # For running multiple surveys and templates from specified directories
-# Modified: 2014 MARCH 09
+# Modified: 2015 JULY 21
 
 batchCorMatch <-
 function(
@@ -21,21 +21,21 @@ function(
   if(missing(templates)) {
     if(missing(dir.template)) stop('Both arguments dir.template and templates are missing--one is needed')
     cat('Reading in templates. .')
-    templates<-readCorTemplates(dir=dir.template,ext=ext.template,parallel=parallel)
+    templates <- readCorTemplates(dir=dir.template, ext=ext.template, parallel=parallel)
     cat(' . done.\n')
   } 
 
   # Create a vector of survey file names
-  survey.files<-list.files(path=dir.survey,pattern=paste0('*\\.',ext.survey,'$')) 
-  survey.files.full<-list.files(path=dir.survey,pattern=paste0('*\\.',ext.survey,'$'),full.names=TRUE) 
+  survey.files <- list.files(path=dir.survey, pattern=paste0('*\\.', ext.survey, '$')) 
+  survey.files.full <- list.files(path=dir.survey, pattern=paste0('*\\.', ext.survey, '$'), full.names=TRUE) 
 
-  detects<-NULL
+  detects <- NULL
   for(i in 1:length(survey.files)) {
-    cat('\nCalling corMatch for',survey.files[i],'. . .\n')
-    scores<-corMatch(survey=survey.files.full[i],templates=templates,parallel=parallel,show.prog=show.prog,cor.method=cor.method,warn=warn,time.source=time.source)
-    cat('\nCalling findPeaks for output from',survey.files[i],'. . .\n')
-    pks<-findPeaks(score.obj=scores,parallel=parallel)
-    detects<-rbind(detects,getDetections(pks,id=survey.files[i]))
+    cat('\nCalling corMatch for', survey.files[i], '. . .\n')
+    scores <- corMatch(survey=survey.files.full[i], templates=templates, parallel=parallel, show.prog=show.prog, cor.method=cor.method, warn=warn, time.source=time.source)
+    cat('\nCalling findPeaks for output from', survey.files[i], '. . .\n')
+    pks <- findPeaks(score.obj=scores, parallel=parallel)
+    detects <- rbind(detects, getDetections(pks, id=survey.files[i]))
   }
 
   return(detects)

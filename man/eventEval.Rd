@@ -7,16 +7,21 @@ Evaluate Detected Events with Known Event Sources and Times
 Evaluate whether the detected events are True +, True -, False +, or False - detections by comparing the results to a table of events with known sources and times (such as annotations from \code{\link{viewSpec}}).  Events to evaluate may be either directly from an object of class \code{\linkS4class{detectionList}}, a csv file or data frame resulting from a call to \code{\link{getPeaks}} or \code{\link{getDetections}}, or a data frame downloaded from an acoustics database.  A value for score.cutoff must be supplied to distinguish between True + and False -, even if assessing all peaks.
 }
 \usage{
-eventEval(detections, what = "detections", which.one, standard,
-score.cutoff=11, tol = 1)
+eventEval(detections, what = "detections", which.one, standard, 
+score.cutoff = 11, tol = 1)
 }
 
 \arguments{
   \item{detections}{An object of class \code{\linkS4class{detectionList}}, a csv file, or data frame containing detection results.  See Details.}
+
   \item{what}{If a \code{detectionList} object is supplied for \code{detections} the character value of either "detections" (default; all peaks above the score cutoff) or all "peaks" may be selected.}
+
   \item{which.one}{If the detection process involved multiple templates only one may be selected for evaluation.  Value can be either character (identifying the template name), or numerical (identifying the position in names(detections['template']).  See Details.}
+
   \item{standard}{The "standard" is the results from annotation with \code{viewSpec} (i.e. Gold Standard) containing the source and time of each event.  Can be a data frame or a file path to a csv file.}
+
   \item{score.cutoff}{If no template is supplied a \code{score.cutoff} can be supplied to evaluate false negatives.}
+
   \item{tol}{Numeric value for tolerance, with units seconds.  If a detected event is within this value (actually +/- 0.5 x \code{tol}), the events are assumed to co-occur and be of the same origin.}
 }
 
@@ -48,30 +53,32 @@ data(btnw)
 data(survey)
 
 # Write Wave objects to file (temporary directory used here)
-btnw.fp<-file.path(tempdir(),"btnw.wav")
-survey.fp<-file.path(tempdir(),"survey2010-12-31_120000_EST.wav")
+btnw.fp <- file.path(tempdir(), "btnw.wav")
+survey.fp <- file.path(tempdir(), "survey2010-12-31_120000_EST.wav")
 writeWave(btnw, btnw.fp)
 writeWave(survey, survey.fp)
 
 # Make a template
-btemp<-makeBinTemplate(btnw.fp, frq.lim=c(2, 8), select="auto", name="btnw1", buffer=4,
-                     amp.cutoff=-31, binary=TRUE)
+btemp <- makeBinTemplate(btnw.fp, frq.lim = c(2, 8), select = "auto", name = "btnw1", buffer =
+                         4, amp.cutoff = -31, binary = TRUE)
 
 # Binary point matching
-scores<-binMatch(survey=survey.fp, templates=btemp, time.source="fileinfo")
+scores <- binMatch(survey = survey.fp, templates = btemp, time.source = "fileinfo")
 
 # Isolate peaks
-pks<-findPeaks(scores)
+pks <- findPeaks(scores)
 
 # Evaluate peaks
 data(survey_anno)
-survey_anno<-survey_anno[survey_anno['name']=='BTNW', ]  # Extract the "BTNW" rows
-peaks<-getPeaks(pks) 
-eval<-eventEval(detections=peaks, standard=survey_anno, score.cutoff=15)
 
-# Clean up
-file.remove(btnw.fp)
-file.remove(survey.fp)
+survey_anno <- survey_anno[survey_anno['name'] == 'BTNW', ]  # Extract the "BTNW" rows
+
+peaks <- getPeaks(pks) 
+
+eval <- eventEval(detections = peaks, standard = survey_anno, score.cutoff = 15)
+
+
+
 }
 
 \keyword{manip}

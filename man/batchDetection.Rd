@@ -14,7 +14,7 @@ These functions make it easy to analyze multiple survey files in a single call. 
 
 \usage{
 batchCorMatch(dir.template, dir.survey = ".", ext.template = "ct", ext.survey = "wav", 
-    templates, parallel = FALSE, show.prog = FALSE, cor.method = "pearson", warn = TRUE,
+    templates, parallel = FALSE, show.prog = FALSE, cor.method = "pearson", warn = TRUE, 
     time.source = "filename", fd.rat = 1, ...)
 
 batchBinMatch(dir.template, dir.survey = ".", ext.template = "bt", ext.survey = "wav", 
@@ -101,9 +101,9 @@ Manually writing a \code{for} loop is a more flexible solution.
 }
  
 \seealso{
-\code{\link{corMatch}},
-\code{\link{binMatch}},
-\code{\link{findPeaks}},
+\code{\link{corMatch}}, 
+\code{\link{binMatch}}, 
+\code{\link{findPeaks}}, 
 \code{\link{getDetections}}
 }
 
@@ -111,9 +111,10 @@ Manually writing a \code{for} loop is a more flexible solution.
 \dontrun{
 # Assume multiple survey files are in the subdirectory "Surveys" and templates 
 # are in subdirectory "Templates"
-detects<-batchCorMatch("Templates","Surveys")
+detects <- batchCorMatch("Templates", "Surveys")
+
 # Or, to use an existing template list instead
-detects<-batchCorMatch(ctemps,"Surveys")
+detects <- batchCorMatch(ctemps, "Surveys")
 }
 
 }

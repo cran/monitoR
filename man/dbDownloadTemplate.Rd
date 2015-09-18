@@ -7,8 +7,8 @@ Download Acoustic Templates from a Database
 }
 
 \usage{
-dbDownloadTemplate(db.name = "acoustics", uid, pwd, type, 
-names, species, FFTwl, FFTovlp, FFTwn, ...)
+dbDownloadTemplate(db.name = "acoustics", uid, pwd, type, names, 
+                   species, FFTwl, FFTovlp, FFTwn, ...)
 }
 
 \arguments{
@@ -37,7 +37,7 @@ Jon Katz
 }
 
 \note{
-In the acoustics database templates are broken into components, and vectors are stored as text objects in various fields. To stay beneath the maximum download vector size of \code{\link[RODBC]{sqlQuery}}, extraneous characters are removed from each vector during upload; some must be re-inserted during download.  Space characters are not replaced, but all amplitude values for correlation templates are sign-inverted and converted from integers to floating point decimal.  All decimals were rounded to the hundredth's place during upload.  These measures are sometimes insufficient and users may find it useful to increase the maximum download vector size in sqlQuery (see the vignette "MySQL_DataSources_RODBC" for further details).  Large templates may take more than several seconds to download; 2-10 seconds is normal for binary point matching templates, and 5-30 seconds is normal for correlation templates.
+In the acoustics database templates are broken into components, and vectors are stored as text objects in various fields. To stay beneath the maximum download vector size of \code{\link[RODBC]{sqlQuery}}, extraneous characters are removed from each vector during upload; some must be re-inserted during download.  Space characters are not replaced, but all amplitude values for correlation templates are sign-inverted and converted from integers to floating point decimal.  All decimals were rounded to the hundredth's place during upload.  These measures are sometimes insufficient and users may find it useful to increase the maximum download vector size in sqlQuery (see the vignette \dQuote{MySQL_DataSources_RODBC} for further details).  Large templates may take more than several seconds to download; 2-10 seconds is normal for binary point matching templates, and 5-30 seconds is normal for correlation templates.
 }
 
 \seealso{
@@ -47,20 +47,20 @@ In the acoustics database templates are broken into components, and vectors are 
 \examples{
 \dontrun{
 #If using the 'acoustics' schema verbatim:
-btnw<-dbDownloadTemplate(
+btnw <- dbDownloadTemplate(
         type = "BIN", 
-        names= c("template1","template2")
+        names= c("template1", "template2")
         FFTwl = 512, 
         FFTovlp = 0, 
         FFTwn = "hanning")
         
 #'acoustics' schema, different database name:
-btnw<-dbDownloadTemplate(
+btnw <- dbDownloadTemplate(
         db.name = "LocalSQLdb", 
         uid = "EntryOnly" , 
         pwd = "07H23BBM", 
         type = "COR", 
-        species = c("BTNW","OVEN") 
+        species = c("BTNW", "OVEN") 
         FFTwl = 512, 
         FFTovlp = 0, 
         FFTwn = "hanning")}

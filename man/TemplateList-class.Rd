@@ -45,16 +45,16 @@ Classes \code{corTemplateList} and \code{binTemplateList} extend the virtual cla
   \code{\link{combineBinTemplates}}, 
   \code{\link{templateCutoff}}, 
   \code{\link{templateComment}}, 
-  \code{\link{getTemplates}},
-  \code{\link{plot-methods}},
+  \code{\link{getTemplates}}, 
+  \code{\link{plot-methods}}, 
   \code{\link{[-methods}}
 }
 \examples{
 showClass("TemplateList")
+
 showClass("corTemplateList")
+
 showClass("binTemplateList")
-
-
 
 }
 \keyword{classes}

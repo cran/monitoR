@@ -1,16 +1,14 @@
-\name{cutw}
-\alias{cutw}
-\alias{cutw-deprecated}
-\alias{biogas-deprecated}
+\name{cutWave}
+\alias{cutWave}
 
 \title{
-Deprecated Function to Extract Shorter Wave Objects from other Wave Objects
+Extract Shorter Wave Objects from other Wave Objects
 }
 \description{
 Extract shorter Wave objects from other Wave objects.  Extracted wave object will be between the \code{from} and \code{to} boundaries.
 }
 \usage{
-cutw(wave, from = NULL, to = NULL)
+cutWave(wave, from = NULL, to = NULL)
 }
 
 \arguments{
@@ -20,9 +18,8 @@ cutw(wave, from = NULL, to = NULL)
 }
 
 \details{
-This function is a simplified version of \code{\link[seewave]{cutw}} from the seewave pacakge.
-This function is deprecated.
-Please use the identical replacement \code{\link{cutWave}} instead.
+This function is a simplified version of \code{\link[seewave]{cutw}} from the seewave package.
+Its original name in the monitoR was the same (\code{cutw}), but has since been changed to avoid conflict for those who use both packages.
 }
 
 \value{
@@ -37,7 +34,7 @@ Sasha D. Hafner
 \examples{
 data(survey)
 
-event1 <- cutw(wave = survey, from = 1.5, to = 4.75)
+event1 <- cutWave(wave = survey, from = 1.5, to = 4.75)
 }
 
 \keyword{manip}

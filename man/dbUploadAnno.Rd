@@ -6,7 +6,8 @@
 }
 
 \usage{
-dbUploadAnno(annotations, survey, db.name = "acoustics", uid, pwd, analyst = "", ...)
+dbUploadAnno(annotations, survey, db.name = "acoustics", uid, 
+             pwd, analyst = "", ...)
 }
 
 \arguments{

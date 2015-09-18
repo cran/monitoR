@@ -39,9 +39,9 @@ Jon Katz, Sasha D. Hafner
 \code{\link[grDevices]{gray}}, \code{\link[grDevices]{rainbow}}, \code{\link[grDevices]{topo.colors}}, \code{\link[grDevices]{terrain.colors}}
 }
 \examples{
-spec.test<-function(mat, spec.col) image(z=t(mat), col=spec.col)
+spec.test <- function(mat, spec.col) image(z = t(mat), col = spec.col)
 
-mat<-matrix(1:30, ncol=6, byrow=TRUE)
+mat <- matrix(1:30, ncol = 6, byrow = TRUE)
 
 spec.test(mat = mat, spec.col = gray.1())
 spec.test(mat = mat, spec.col = gray.2())
@@ -51,11 +51,11 @@ spec.test(mat = mat, spec.col = topo.1())
 
 \dontrun{
 # Colors are defined as:
-gray.1 <- function(n=30) gray(seq(1, 0, length.out=n))
-gray.2 <- function(n=30) gray(1-seq(0, 1, length.out=n)^2)
-gray.3 <- function(n=30) gray(1-seq(0, 1, length.out=n)^3)
-rainbow.1 <- function(n=15) rev(rainbow(n))
-topo.1 <- function(n=12) rev(topo.colors(n))}
+gray.1 <- function(n = 30) gray(seq(1, 0, length.out = n))
+gray.2 <- function(n = 30) gray(1-seq(0, 1, length.out = n)^2)
+gray.3 <- function(n = 30) gray(1-seq(0, 1, length.out = n)^3)
+rainbow.1 <- function(n = 15) rev(rainbow(n))
+topo.1 <- function(n = 12) rev(topo.colors(n))}
 }
 
 \keyword{color}

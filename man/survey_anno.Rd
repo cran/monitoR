@@ -27,8 +27,8 @@ These annotations can be plotted onto the spectrogram by loading them in with th
 # View annotations
 data(survey)
 data(survey_anno)
-write.csv(survey_anno, "survey_anno.csv", row.names=FALSE)
-viewSpec(survey, annotate=TRUE, anno="survey_anno.csv")
+write.csv(survey_anno, "survey_anno.csv", row.names = FALSE)
+viewSpec(survey, annotate = TRUE, anno = "survey_anno.csv")
 }
 }
 \keyword{datasets}

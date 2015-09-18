@@ -8,8 +8,9 @@ Upload a MySQL Database Schema to Create Tables in an Acoustics Database
 Use this function to select a schema and upload it to an existing MySQL database.  All tables in the schema will be created in the database.
 }
 \usage{
-dbSchema(schema, name.on.host, tables = FALSE, schema.name = "NOH", 
-db.name = "acoustics", uid, pwd, ...)
+dbSchema(schema, name.on.host, tables = FALSE, 
+         schema.name = "NOH", db.name = "acoustics", uid, pwd, 
+         ...)
 }
 
 \arguments{
@@ -46,8 +47,8 @@ Jon Katz
 dbSchema(
     schema = "acoustics.sql", 
     name.on.host = "acoustics", 
-    tables = TRUE,
-    schema.name='myschema',
+    tables = TRUE, 
+    schema.name = 'myschema', 
     db.name = "acoustics", 
     uid = "Admin", 
     pwd = "BadPassword!" )

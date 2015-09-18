@@ -7,17 +7,18 @@
 
 \usage{
 dbDownloadCardRecorderID(db.name = "acoustics", uid, pwd, 
-date.deployed, date.collected, loc.prefix, ...)
+                         date.deployed, date.collected, 
+			 loc.prefix, ...)
 
-dbDownloadSurvey(db.name = "acoustics", uid, pwd, start.date, end.date, loc.prefix, 
-samp.rate, ext, ...)
+dbDownloadSurvey(db.name = "acoustics", uid, pwd, start.date, 
+                 end.date, loc.prefix, samp.rate, ext, ...)
 }
 
 \arguments{
   \item{db.name}{Name of the ODBC connector data source corresponding to the acoustics database.}
   \item{uid}{User ID to allow ODBC connector to connect to database, if not present in ODBC connector.}
   \item{pwd}{Password to allow ODBC connector to connect to database, if not present in ODBC connector.}
-  \item{date.deployed, date.collected, start.date, end.date}{Dates to filter results, in a recognizable POSIX format: \code{YYYY/MM/DD}.}
+  \item{date.deployed, date.collected, start.date, end.date}{Dates to filter results, as a character string formatted to your database storage; in the example we use \code{YYYY/MM/DD}, but be aware that you may need to include a full timestamp: \code{YYYY/MM/DD 00:00:00}.}
   \item{loc.prefix}{Location prefix or vector of six-character prefixes by which to filter results.}
   \item{samp.rate}{Numerical sampling rate of surveys (Hz).}
   \item{ext}{Character file extension "wav" or "mp3".}
@@ -48,20 +49,20 @@ These are convenience functions for users who are unfamiliar with SQL syntax and
 \examples{
 \dontrun{
 #If using the 'acoustics' schema verbatim:
-CRs<-dbDownloadCardRecorderID(
+CRs <- dbDownloadCardRecorderID(
         date.deployed = "2012/05/22", 
         date.collected = "2012/05/29", 
         loc.prefix = "MABI01")
         
-surveys<-dbDownloadSurvey(
+surveys <- dbDownloadSurvey(
         start.date = "2012/05/22", 
         end.date = "2012/05/29", 
         loc.prefix = "MABI01", 
-        samp.rate=24000,
-        ext="wav")
+        samp.rate = 24000, 
+        ext = "wav")
         
 #'acoustics' schema, different database name:
-CRs<-dbDownloadCardRecorderID(
+CRs <- dbDownloadCardRecorderID(
         db.name = "LocalSQLdb", 
         uid = "EntryOnly", 
         pwd = "07H23BBM", 
@@ -69,15 +70,16 @@ CRs<-dbDownloadCardRecorderID(
         date.collected = "2012/05/29", 
         loc.prefix = "MABI01")
         
-surveys<-dbDownloadSurvey(
+surveys <- dbDownloadSurvey(
         db.name = "LocalSQLdb", 
         uid = "EntryOnly", 
         pwd = "07H23BBM", 
         start.date = "2012/05/22", 
         end.date = "2012/05/29", 
         loc.prefix = "MABI01", 
-        samp.rate=24000,
-        ext="wav")}
+        samp.rate = 24000, 
+        ext = "wav")
+}
 }
 
 \keyword{database}

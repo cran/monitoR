@@ -53,14 +53,14 @@ In the acoustics database templates are broken into components, and vectors are 
 # Template construction
 \dontrun{
 data(btnw)
-b4<-makeBinTemplate(
-    "btnw.wav",
-    frq.lim=c(2, 8),
-    select="auto",
-    name="b4",
-    buffer=4,
-    amp.cutoff=-31,
-    binary=TRUE)
+b4 <- makeBinTemplate(
+    "btnw.wav", 
+    frq.lim = c(2, 8), 
+    select = "auto", 
+    name = "b4", 
+    buffer = 4, 
+    amp.cutoff = -31, 
+    binary = TRUE)
 
 \dontrun{
 #If using the 'acoustics' schema verbatim:

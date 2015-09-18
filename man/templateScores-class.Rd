@@ -37,7 +37,7 @@ However, they should always be created with the \code{\link{corMatch}} or \code{
 }
 
 \seealso{
-\code{\link{findPeaks}},
+\code{\link{findPeaks}}, 
 \code{\linkS4class{detectionList}}
 }
 \examples{

@@ -45,37 +45,37 @@ data(btnw)
 
 writeWave(btnw, "btnw.wav")
 
-btnw2<-cutw(survey, from=0.75, to=3)
+btnw2 <- cutw(survey, from = 0.75, to = 3)
 
 writeWave(btnw2, "btnw2.wav")
 
 # Template construction
-btnw1<-makeBinTemplate(
-        "btnw.wav",
-        frq.lim=c(2, 8),
-        select="auto",
-        name="btnw1",
-        buffer=4,
-        amp.cutoff=-31,
-        binary=TRUE)
+btnw1 <- makeBinTemplate(
+        "btnw.wav", 
+        frq.lim = c(2, 8), 
+        select = "auto", 
+        name = "btnw1", 
+        buffer = 4, 
+        amp.cutoff = -31, 
+        binary = TRUE)
 
-btnw2<-makeBinTemplate(
-        "btnw2.wav",
-        frq.lim=c(2, 8),
-        select="auto",
-        name="btnw2",
-        buffer=4,
-        amp.cutoff=-24,
-        binary=TRUE)
+btnw2 <- makeBinTemplate(
+        "btnw2.wav", 
+        frq.lim = c(2, 8), 
+        select = "auto", 
+        name = "btnw2", 
+        buffer = 4, 
+        amp.cutoff = -24, 
+        binary = TRUE)
 
 # Join templates
-btnw<-combineBinTemplates(btnw1, btnw2)
+btnw <- combineBinTemplates(btnw1, btnw2)
 
 # Binary point matching
-scores<-binMatch(survey=survey, templates=btnw, time.source='fileinfo')
+scores <- binMatch(survey = survey, templates = btnw, time.source = 'fileinfo')
 
 # Isolate peaks
-pks<-findPeaks(scores)
+pks <- findPeaks(scores)
 
 # View detections
 getDetections(pks)

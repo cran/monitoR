@@ -7,8 +7,8 @@ Create \code{\linkS4class{detectionList}} Objects from Data Stored in a Database
 This function creates \code{detectionList} objects corresponding to a specified survey and \code{\linkS4class{TemplateList}} from data available in an acoustics database.
 }
 \usage{
-dbDownloadResult(db.name = "acoustics", uid, pwd, survey, templates, type, FFTwl, 
-FFTwn, FFTovlp, ...)
+dbDownloadResult(db.name = "acoustics", uid, pwd, survey, templates, 
+                 type, FFTwl, FFTwn, FFTovlp, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -17,7 +17,7 @@ FFTwn, FFTovlp, ...)
   \item{pwd}{Password to allow ODBC connector to connect to database, if not present in ODBC connector.}
   \item{survey}{Character value, name of survey as it appears in the acoustics database}
   \item{templates}{object of class \code{TemplateList} or character vector of template names as they appear in an acoustics database}
-  \item{type}{Character value in c("BIN","COR") to filter the results for either \code{\link{binMatch}} or \code{\link{corMatch}} results, respectively}
+  \item{type}{Character value in c("BIN", "COR") to filter the results for either \code{\link{binMatch}} or \code{\link{corMatch}} results, respectively}
   \item{FFTwl}{Filter for templates with specific FFT window lengths.}
   \item{FFTovlp}{Filter for templates with specific FFT window overlap.}
   \item{FFTwn}{Filter for templates with specific FFT window names.}
@@ -41,12 +41,12 @@ Sasha D. Hafner
 \examples{
 \dontrun{
 #If using the 'acoustics' schema verbatim:
-examp<-dbDownloadResult(
+examp <- dbDownloadResult(
         survey = "INTV02_2011-06-25_081000_EDT.mp3", 
         templates = templates, type = "BIN")
         
 #'acoustics' schema, different database name:
-examp<-dbDownloadResult(
+examp <- dbDownloadResult(
         db.name = "LocalSQLdb", 
         uid = "EntryOnly" , 
         pwd = "07H23BBM", 

@@ -41,30 +41,24 @@ If \code{return.times = TRUE}, a list:
 Sasha D. Hafner
 }
 
-\seealso{
-\code{\link{viewSpec}}, \code{\link{collapseClips}}, \code{\link[tuneR]{bind}}.
+\seealso{ 
+  \code{\link{viewSpec}}, 
+  \code{\link{collapseClips}}, 
+  \code{\link[tuneR]{bind}}.  
 }
-\examples{
-data(survey_anno)
+
+\examples{ 
+
+data(survey_anno) 
 data(survey)
+
 # Don't return times
-events <- bindEvents(
-        rec = survey, 
-        file = survey_anno, 
-        by.species = TRUE, 
-        parallel = FALSE, 
-        return.times = FALSE)
+events <- bindEvents( rec = survey, file = survey_anno, by.species = TRUE, parallel = FALSE,
+                     return.times = FALSE)
 
 # Return times       
-events <- bindEvents(
-        rec = survey, 
-        file = survey_anno, 
-        by.species = TRUE, 
-        parallel = FALSE, 
-        return.times = TRUE)
-        
-        
-        
+events <- bindEvents( rec = survey, file = survey_anno, by.species = TRUE, parallel = FALSE,
+                     return.times = TRUE)
         
 }
 \keyword{manip}

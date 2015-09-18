@@ -6,7 +6,7 @@
 }
 
 \description{
-  Use this function to template lists from \code{\linkS4class{templateScores}} or \code{\linkS4class{detectionList}} objects.
+  Use this function to extract template lists from \code{\linkS4class{templateScores}} or \code{\linkS4class{detectionList}} objects.
 }
 
 \usage{
@@ -40,8 +40,8 @@ getTemplates(object, which.ones = names(object@templates))
 
 \seealso{
   \code{\link{makeCorTemplate}}, 
-  \code{\link{makeBinTemplate}},
-  \code{\link{templateCutoff}},
+  \code{\link{makeBinTemplate}}, 
+  \code{\link{templateCutoff}}, 
   \code{\link{templateComment}}
 }
 

@@ -1,48 +1,138 @@
 monitoR
-#########################################
-##  SUMMARY OF CHANGES AFFECTING USERS ##
-#########################################
-2015 APRIL 23
-Version 1.0.3
-* Added hours.offset argument to fileCopyRename() for manual override of 
-timezone management.
+2015 September 18 Sasha D. Hafner
+Version 1.0.4
 
-* Global time-zone detection in binMatch() and corMatch() when time.source="filename".
+*NAMESPACE
+Added cutWave to export()
 
-* Streamlined database functions; most query arguments are now optional.
+*cutWave.Rd
+Switched cutw to cutWave in example.
 
-* Added write.wav argument to makeCorTemplate(), makeBinTemplate(),
-corMatch(), and binMatch. If a Wave object is used for the first argument 
-(clip or survey), these function no longer automatically write the object to file 
-(but will do so if write.wav=TRUE). 
+2015 September 17 Sasha D. Hafner
+Version 1.0.4
 
-* makeBinTemplate() New behavior for dens argument: points are now randomly 
-sampled, and repeated selection of an area increases the density. 
+*makeBinTemplate.R, makeCorTemplate.R
+Used 'if' construct to return appropriate message for ending interactive
+graphical input (or moving onto the next input) depending on whether .Device
+is X11 or not. Original message always was "...right click".
 
-* New function templatePath() for extracting or replacing the paths for Wave 
-files.
+2015 September 17 Jon Katz
+Version 1.0.4
+*binMatch.R, corMatch.R, fileCopyRename.R
+Added optional argument rec.tz to allow manual specification of the timezone
+in which a survey was recorded. This change was originally made in April 2015
+for version 1.0.3.
 
-* Added option to plot template over detections using argument box="template" 
-in showPeaks().
+2015 September 12 Sasha D. Hafner
+Version 1.0.4
 
-2014 MAY 15
-Version 1.0.2
-* Minor bug fixes.
+*monitoR_QucikStart.Rnw
+Added spaces to R code.
 
-2014 MARCH 28
-Version 1.0.1
-* seewave and its dependencies no longer required for installation of monitoR.
+2015 September 7 Sasha D. Hafner
+Version 1.0.4
 
-2014 MARCH 27
-Version 1.0.0
-Initial upload to CRAN.
-
-
+*dbDownloadCardRecorderID.R, dbDownloadTemplate.R, dbUploadResult.R,
+dbDownloadResult.R, dbSchema.R, dbUploadSurvey.R, dbDownloadSurvey.R,
+dbUploadAnno.R, dbUploadTemplate.R
+Fixed indentation of usage lines, plus other small changes.
 
 
-####################
-##  DETAILED LOG  ##
-####################
+2015 September 6 Sasha D. Hafner
+Version 1.0.4
+
+*dbDownloadCardRecorderID.R, dbDownloadTemplate.R, dbUploadResult.R,
+dbDownloadResult.R, dbSchema.R, dbUploadSurvey.R, dbDownloadSurvey.R,
+dbUploadAnno.R, dbUploadTemplate.R
+Added check at start of functions to make sure RODBC package is installed.
+
+*dbDownloadResults.R, fileCopyRename.R, getClip.R, Methods-plot.R, viewSpec.R
+Added tuneR:: to all readWave() calls.
+
+*viewSpec.R
+Added tuneR:: to all channel() calls.
+
+*getClip.R, showPeaks.R, viewSpec.R
+Added tuneR:: to all writeWave() calls.
+
+*collapseClips.R
+Added tuneR:: to bind() call.
+
+*templateComment.R, templateCutoff.R, templateNames.R, templatePath.R
+Removed space before <- in, e.g., templatePath<-, that had been added by a
+Perl command earlier.
+
+*templateComment.Rd, templateCutoff.Rd, templateNames.Rd, templatePath.Rd
+Removed space before <- in, e.g., \alias{templatePath<-}, that had been added by a
+Perl command earlier.
+
+*index-methods.Rd, plot-methods.Rd, show-methods.Rd
+Removed space after comma in, e.g., \alias{[,templateScores-method}, added
+earlier by Perl command.
+
+*Methods-plot.R
+Replaced 'ext' with 'file.ext' in error message on line 29.
+
+*monitoR_QuickStart.Rnw
+Changed reference to cutw to cutWave.
+
+*binMatch.R, corMatch.R
+Removed space in {1, 7}, apparently added by Perl command earlier.
+
+*dbSchema.Rd, mp3Subsamp.Rd, readMP3.Rd
+Removed space added around = in URL.
+
+*NAMESPACE
+Added "image" and "plot" to importFrom for graphics package. Only saw a NOTE
+on this after removing tuneR import from file as a test.
+Switch to importFrom for tuneR functions.
+
+*NAMESPACE
+(This change made a month or two ago)
+Added import and importFrom directives for all non-base package functions. 
+
+2015 August 8 Sasha D. Hafner
+Version 1.0.4
+
+*collapseClips.R, makeBinTemplate.R, makeCorTemplate.R, Methods-plot.R,
+showPeaks.R, viewSpec.R
+Replaced calls to cutw() with calls to cutWave() using Perl.
+
+
+2015 August 1 Sasha D. Hafner
+Version 1.0.4
+
+*cutWave.R 
+New name for old cutw() function.
+
+*cutw.R 
+Added call to .Deprecated. The cutw() function will be removed in
+the future.
+
+*All Rd files 
+Added spaces to examples to make them easier to read. Fixed
+typos.
+
+2015 July 21 Sasha D. Hafner
+Version 1.0.4
+
+All R files Added spaces around <-, after commas, and around =, ==, and !=
+using Perl.
+
+2015 MAY 15 Jon Katz
+Version 1.0.4
+
+*viewSpec.Rd and showPeaks.Rd Details regarding the player argument updated to instruct 
+on correct Windows syntax with tempfiles.
+
+* showPeaks.R Fixed bug identifying when there are no hits to show, originally
+failed when 1 hit is present. Changed fd.rat default from 2 to 4.
+
+* getPeaks.R/getDetections.R Added return of an empty data frame when no
+peaks/detections are present.
+
+* dbDownloadSurvey.R dropped first AND operator included in SQL query
+
 2015 APRIL 22 Sasha Hafner and Jon Katz
 Version 1.0.3
 *fileCopyRename.R/Rd New argument hours.offset allows user to manually offset the modification date to transport recordings across time zones. 

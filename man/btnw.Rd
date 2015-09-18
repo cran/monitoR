@@ -9,7 +9,9 @@ Black-Throated Green Warbler (\emph{Setophaga virens}) Song
 A 3 second wave recording of a Black-throated Green Warbler (\emph{Setophaga virens}) song.
 }
 
-\usage{data(btnw)}
+\usage{
+data(btnw)
+}
 
 \format{
 The format is: \cr
@@ -28,6 +30,7 @@ Sound clips were recorded in Vermont, USA in 2010.  Equipment was a Wildlife Aco
 
 \examples{
 data(btnw)
+
 viewSpec(btnw)
 }
 

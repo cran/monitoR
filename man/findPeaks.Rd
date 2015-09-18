@@ -2,7 +2,7 @@
 \alias{findPeaks}
 
 \title{
-  Finding Score Peaks and Detections in a \code{templateScores} Object
+  Find Score Peaks and Detections in a \code{templateScores} Object
   }
 
 \description{
@@ -58,11 +58,11 @@ An S4 object of class \code{templateScores}, with the following slots:
 }
 
 \seealso{
-\code{\link{makeCorTemplate}},
-\code{\link{makeBinTemplate}},
-\code{\link{corMatch}},
-\code{\link{binMatch}},
-\code{\link{getDetections}},
+\code{\link{makeCorTemplate}}, 
+\code{\link{makeBinTemplate}}, 
+\code{\link{corMatch}}, 
+\code{\link{binMatch}}, 
+\code{\link{getDetections}}, 
 \code{\link{getPeaks}}
 }
 
@@ -73,47 +73,55 @@ data(oven)
 data(survey)
 
 # Write Wave objects to file (temporary directory used here)
-btnw.fp<-file.path(tempdir(),"btnw.wav")
-oven.fp<-file.path(tempdir(),"oven.wav")
-survey.fp<-file.path(tempdir(),"survey2010-12-31_120000_EST.wav")
+btnw.fp <- file.path(tempdir(), "btnw.wav")
+oven.fp <- file.path(tempdir(), "oven.wav")
+survey.fp <- file.path(tempdir(), "survey2010-12-31_120000_EST.wav")
 writeWave(btnw, btnw.fp)
 writeWave(oven, oven.fp)
 writeWave(survey, survey.fp)
 
 # Correlation example
 # Create two correlation templates
-wct<-makeCorTemplate(btnw.fp, t.lim=c(1.5, 2.1), frq.lim=c(4.2, 5.6), name="w")
-oct<-makeCorTemplate(oven.fp, t.lim=c(1, 4), frq.lim=c(1, 11), dens=0.1, name="o")
+wct <- makeCorTemplate(btnw.fp, t.lim = c(1.5, 2.1), frq.lim = c(4.2, 5.6), name = "w")
+
+oct <- makeCorTemplate(oven.fp, t.lim = c(1, 4), frq.lim = c(1, 11), dens = 0.1, name = "o")
 
 # Combine them
-ctemps<-combineCorTemplates(wct, oct)
+ctemps <- combineCorTemplates(wct, oct)
 
 # Calculate scores
-cscores<-corMatch(survey.fp, ctemps)
+cscores <- corMatch(survey.fp, ctemps)
 
 # Finally, find peaks and detections
-cdetects<-findPeaks(cscores)
+cdetects <- findPeaks(cscores)
+
 cdetects
+
 plot(cdetects)
+
+# plotting help:
+method?plot('detectionList')
 
 # Binary example
 \dontrun{
-# Not run because of the time required (maybe 2-5 seconds)
-# Create two templates
-wbt<-makeBinTemplate(btnw.fp, amp.cutoff=-30, t.lim=c(1.5, 2.1), frq.lim=c(4.2, 5.6),
-                     buffer=2, name="w")
-obt<-makeBinTemplate(oven.fp, amp.cutoff=-20, t.lim=c(1, 4), frq.lim=c(1, 11), 
-		     name="o")
+# Not run because of the time required (maybe 2-5 seconds) Create two templates
+wbt <- makeBinTemplate(btnw.fp, amp.cutoff = -30, t.lim = c(1.5, 2.1), frq.lim = c(4.2, 5.6),
+                       buffer = 2, name = "w")
+
+obt <- makeBinTemplate(oven.fp, amp.cutoff = -20, t.lim = c(1, 4), frq.lim = c(1, 11), 
+                       name = "o")
 
 # Combine them
-btemps<-combineBinTemplates(wbt, obt)
+btemps <- combineBinTemplates(wbt, obt)
 
 # Calculate scores
-bscores<-binMatch(survey.fp, btemps)
+bscores <- binMatch(survey.fp, btemps)
 
 # Finally, find peaks and detections
-bdetects<-findPeaks(bscores)
+bdetects <- findPeaks(bscores)
+
 bdetects
+
 plot(bdetects)
 }
 
