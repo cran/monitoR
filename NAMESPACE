@@ -16,7 +16,6 @@ export(
   combineCorTemplates,
   compareTemplates,
   corMatch,
-  cutw,
   cutWave,
   dbDownloadCardRecorderID,
   dbDownloadResult,

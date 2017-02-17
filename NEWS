@@ -1,4 +1,14 @@
 --------------------------------------------------------------------------------
+monitoR 1.0.5
+2017 February 17
+--------------------------------------------------------------------------------
+
+CHANGED FUNCTION NAME
+*The cutw() function was renamed cutWave() in the last version of monitoR to 
+avoid conflict with the cutw() function in the seewave package. The cutw() 
+function has now been removed.
+
+--------------------------------------------------------------------------------
 monitoR 1.0.4
 2015 September 18
 --------------------------------------------------------------------------------

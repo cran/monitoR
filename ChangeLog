@@ -1,4 +1,25 @@
 monitoR
+Version 1.0.5
+2017 February 16 Sasha D. Hafner
+
+*cutw.R
+Removed file
+
+*NAMESPACE
+Removed cutw
+
+*cutw.Rd
+Removed file
+
+*survey_anno.Rda
+Changed extension to rda
+
+2015 December 11 Jon Katz
+Version 1.0.4
+
+*cutw.Rd
+Removed \alias{biogas-deprecated}
+
 2015 September 18 Sasha D. Hafner
 Version 1.0.4
 
