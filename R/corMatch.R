@@ -1,5 +1,6 @@
 # For calculating scores in spectrogram cross correlation
 # Modified: 6 Sept 2015
+# Florian Hoedt 01 Dec 2017 added show.prog check for the cat() calls
 
 corMatch <-
 function(
@@ -56,13 +57,13 @@ function(
 
   # Loop through templates
   for(i in names(templates@templates)) {
-    cat('\nStarting ', i,'. . .')
+    if(show.prog) {cat('\nStarting ', i,'. . .')}
 
     # Working with a single template
     template <- templates@templates[[i]]
 
     if(i == names(templates@templates)[1] || any(template@wl != wl, template@ovlp != ovlp, template@wn != wn)) {
-      cat('\n\tFourier transform on survey . . .')
+      if(show.prog) {cat('\n\tFourier transform on survey . . .')}
       wl <- template@wl
       ovlp <- template@ovlp
       wn <- template@wn
@@ -75,7 +76,7 @@ function(
       t.survey <- length(survey@left)/survey@samp.rate
       t.step <- t.bins[2] - t.bins[1]
       frq.step <- frq.bins[2] - frq.bins[1]
-      cat('\n\tContinuing. . .\n')
+      if(show.prog) {cat('\n\tContinuing. . .\n')}
     }
 
     # Switch the order of columns in pt.on and pt.off to use them directly for indexing
@@ -135,7 +136,7 @@ function(
       score=score.survey
     )
     survey.data[[i]] <- list(amp=survey.spec$amp, t.bins=t.bins, frq.bins=frq.bins)
-    cat('\n\tDone.\n')
+    if(show.prog) {cat('\n\tDone.\n')}
   }
 
   # Calculate total run time
