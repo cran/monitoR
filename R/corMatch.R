@@ -1,5 +1,5 @@
 # For calculating scores in spectrogram cross correlation
-# Modified: 6 Sept 2015
+# Modified: 2018 Feb 13
 
 corMatch <-
 function(
@@ -8,10 +8,11 @@ function(
   parallel=FALSE,         # If TRUE, mclapply is used for correlation calculations, for parallel processing (Linux or Mac OS X only). If FALSE lapply is used.
   show.prog=FALSE,        # If TRUE, progress is displayed during correlation calculations 
   cor.method='pearson',   # Method used by cor function (see ?cor)
-  warn=TRUE,              # Set to FALSE to surpress warnings
+#  warn=TRUE,              # Set to FALSE to surpress warnings
   time.source='filename', # 'filename' or 'fileinfo' as the mtime source
   rec.tz=NA,              # Time zone setting for recorders 
   write.wav=FALSE,        # Set to TRUE to allow creation of file of survey in working directory
+  quiet=FALSE,            # TRUE will suppress calls to cat()
   ...                     # Additional arguments to the spectro function
 ) {
 
@@ -23,6 +24,13 @@ function(
   if(parallel) {
     lapplyfun <- function(X, FUN) parallel::mclapply(X, FUN, mc.cores=parallel::detectCores())
   } else lapplyfun <- lapply
+
+  # Quiet mode
+  if(quiet) {
+    catfun <- quietcat
+  } else {
+    catfun <- cat
+  }
 
   # Start tracking time (after loading packages)
   t.start <- Sys.time()
@@ -56,13 +64,13 @@ function(
 
   # Loop through templates
   for(i in names(templates@templates)) {
-    cat('\nStarting ', i,'. . .')
+    catfun('\nStarting ', i,'. . .')
 
     # Working with a single template
     template <- templates@templates[[i]]
 
     if(i == names(templates@templates)[1] || any(template@wl != wl, template@ovlp != ovlp, template@wn != wn)) {
-      cat('\n\tFourier transform on survey . . .')
+      catfun('\n\tFourier transform on survey . . .')
       wl <- template@wl
       ovlp <- template@ovlp
       wn <- template@wn
@@ -75,20 +83,22 @@ function(
       t.survey <- length(survey@left)/survey@samp.rate
       t.step <- t.bins[2] - t.bins[1]
       frq.step <- frq.bins[2] - frq.bins[1]
-      cat('\n\tContinuing. . .\n')
+      catfun('\n\tContinuing. . .\n')
     }
 
     # Switch the order of columns in pt.on and pt.off to use them directly for indexing
     pts <- template@pts[, c(2:1, 3)]
 
-    # Adjust pts if step sizes differ
-    if(!isTRUE(all.equal(template@t.step, t.step, tolerance=t.step/1E4))) {
-      pts[, 't'] <- round(pts[, 't']*template@t.step/t.step)
-      if(warn) warning('For ', i,' time step doesn\'t match survey time step: ', t.step, ' != ', template@t.step)
+    # Throws error if step sizes do not match
+    if(!all.equal(template@t.step, t.step, tolerance=t.step/1E4)) {
+      stop('For ', i,' time step doesn\'t match survey time step: ', t.step, ' != ', template@t.step, '. Adjust one or the other and try again.')
+      ##pts[, 't'] <- round(pts[, 't']*template@t.step/t.step)
+      ##if(warn) warning('For ', i,' time step doesn\'t match survey time step: ', t.step, ' != ', template@t.step)
     }
-    if(!isTRUE(all.equal(template@frq.step, frq.step, tolerance=frq.step/1E6))) {
-      pts[, 'frq'] <- round(pts[, 'frq']*template@frq.step/frq.step)
-      if(warn) warning(i, ' frequency step does\'t match survey frequency step, ', frq.step, ' != ', template@frq.step)
+    if(!all.equal(template@frq.step, frq.step, tolerance=frq.step/1E6)) {
+      stop(i, ' frequency step does\'t match survey frequency step, ', frq.step, ' != ', template@frq.step, '. Adjust one or the other and try again.')
+      #pts[, 'frq'] <- round(pts[, 'frq']*template@frq.step/frq.step)
+      #if(warn) warning(i, ' frequency step does\'t match survey frequency step, ', frq.step, ' != ', template@frq.step)
     }
 
     # Determine the frequency limits from the template points
@@ -135,7 +145,7 @@ function(
       score=score.survey
     )
     survey.data[[i]] <- list(amp=survey.spec$amp, t.bins=t.bins, frq.bins=frq.bins)
-    cat('\n\tDone.\n')
+    catfun('\n\tDone.\n')
   }
 
   # Calculate total run time

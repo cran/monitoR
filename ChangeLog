@@ -1,4 +1,34 @@
 monitoR
+
+Version 1.0.7
+2018 Feb 13 Sasha D. Hafner
+
+monitoR_QuickStart.Rnw
+Removed reference to placeins and natbib packages.
+
+corMatch.R
+Added missing ! back in freq.step check. (Change made 8 days earlier)
+
+Version 1.0.7
+2018 Feb 13 Jon Katz
+
+corMatch.R and binMatch.R
+Removed unused argument "warn"
+Added argument "quiet", when TRUE will suppress updates to the console: based on attempted merge by github user "gannebamm" at unofficial github repo
+
+spectro
+Added argument "/dots", allows users to include arg "warn" in calls to binMatch and corMatch
+
+Version 1.0.6 
+2017 June 23 Sasha D. Hafner
+
+corMatch.R and binMatch.R
+Changed warning and template adjustment to error for case when time step or
+frequency step doesn't match between template and survey.
+
+batchDetection.Rd
+Fixed second example when a template list in environment is used.
+
 Version 1.0.5
 2017 February 16 Sasha D. Hafner
 

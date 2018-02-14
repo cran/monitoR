@@ -1,7 +1,7 @@
 ## ----setup, include = FALSE, cache = FALSE---------------------
 options(useFancyQuotes = FALSE)
 library(knitr)
-opts_chunk$set(comment = "#", out.height = "4.0in", out.width = "4.0in", fig.height = 5.2, fig.width = 5.2, fig.align = "center", cache = TRUE)
+opts_chunk$set(comment = "#", out.height = "4.0in", out.width = "4.0in", fig.height = 5.2, fig.width = 5.2, fig.align = "center", cache = FALSE)
 options(tidy = TRUE, width = 65)
 
 ## ----echo = FALSE, warning = FALSE, error = FALSE, message = FALSE----
@@ -129,11 +129,14 @@ plot(cdetects)
 wbt1 <- makeBinTemplate(btnw.fp, amp.cutoff = -40, name = "w1")
 
 ## ----fig.keep = 'none'-----------------------------------------
-wbt2 <- makeBinTemplate(btnw.fp, amp.cutoff = -30, t.lim = c(1.5, 2.1), frq.lim = c(4.2, 5.6), buffer = 2, name = "w2")
+wbt2 <- makeBinTemplate(btnw.fp, amp.cutoff = -30, t.lim = c(1.5, 2.1), 
+                        frq.lim = c(4.2, 5.6), buffer = 2, name = "w2")
 
 ## ----fig.keep = 'none'-----------------------------------------
-obt1 <- makeBinTemplate(oven.fp, amp.cutoff = -20, t.lim = c(1, 4), frq.lim = c(1, 11), name = "o1")
-obt2 <- makeBinTemplate(oven.fp, amp.cutoff = -17, t.lim = c(1, 4), frq.lim = c(1, 11), buffer = 2, name = "o2")
+obt1 <- makeBinTemplate(oven.fp, amp.cutoff = -20, t.lim = c(1, 4), 
+                        frq.lim = c(1, 11), name = "o1")
+obt2 <- makeBinTemplate(oven.fp, amp.cutoff = -17, t.lim = c(1, 4), 
+                        frq.lim = c(1, 11), buffer = 2, name = "o2")
 
 ## --------------------------------------------------------------
 btemps <- combineBinTemplates(wbt1, wbt2, obt1, obt2)

@@ -4,6 +4,7 @@
 \alias{gray.3}
 \alias{rainbow.1}
 \alias{topo.1}
+\alias{specCols}
 
 \title{
 Color Vectors for Spectrograms

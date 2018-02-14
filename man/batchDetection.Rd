@@ -114,7 +114,7 @@ Manually writing a \code{for} loop is a more flexible solution.
 detects <- batchCorMatch("Templates", "Surveys")
 
 # Or, to use an existing template list instead
-detects <- batchCorMatch(ctemps, "Surveys")
+detects <- batchCorMatch(templates = ctemps, dir.survey = "Surveys")
 }
 
 }
