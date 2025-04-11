@@ -1,18 +1,58 @@
 Package: monitoR
 Type: Package
 Title: Acoustic Template Detection in R
-Version: 1.0.7
-Date: 2018-02-14
-Author: Sasha D. Hafner <sdh11@cornell.edu> and Jon Katz <jonkatz4@gmail.com>, with code for the Fourier transform from the seewave package (by Jerome Sueur, Thierry Aubin, and Caroline Simonis), and code for the readMP3 function from the tuneR package (by Uwe Ligges). Therese Donovan provided creative direction and database design support. 
-Maintainer: Sasha D. Hafner <sdh11@cornell.edu>
+Version: 1.2
+Date: 2025-04-10
+Authors@R: c(person(given = c("Sasha", "D."),
+                    family = "Hafner",
+                    role = c("aut", "cre"),
+                    email = "sasha.hafner@bce.au.dk",
+                    comment = c(ORCID = "0000-0003-0955-0327")),
+             person(given = "Jon",
+                    family = "Katz",
+                    role = "aut",
+                    email = "jonkatz4@gmail.com"),
+             person(given = "Jerome",
+                    family = "Sueur",
+                    role = "aut",
+                    comment = "seewave package author (code from Fourier transform used in monitoR)"),
+             person(given = "Thierry",
+                    family = "Aubin",
+                    role = "aut",
+                    comment = "seewave package author (code from Fourier transform used in monitoR)"),
+             person(given = "Caroline",
+                    family = "Simonis",
+                    role = "aut",
+                    comment = "seewave package author (code from Fourier transform used in monitoR)"),
+             person(given = "Uwe",
+                    family = "Ligges",
+                    role = "aut",
+                    comment = "tuneR package author (code from readMP3() used in monitoR)"),
+             person(given = "Therese",
+                    family = "Donovan",
+                    role = "ctb",
+                    comment = "creative direction and database design support")
+                     )
+Maintainer: Sasha D. Hafner <sasha.hafner@bce.au.dk>
 Depends: R (>= 2.10), tuneR, methods
 Imports: graphics, grDevices, stats, utils
 Suggests: fftw, parallel, RODBC, knitr
 Description: Acoustic template detection and monitoring database interface. Create, modify, save, and use templates for detection of animal vocalizations. View, verify, and extract results. Upload a MySQL schema to a existing instance, manage survey metadata, write and read templates and detections locally or to the database. 
 License: GPL-2
-URL: http://www.uvm.edu/rsenr/vtcfwru/R/?Page=monitoR/monitoR.htm
+URL: https://github.com/jonkatz2/monitor
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2018-02-14 09:56:14 UTC; sasha
+Packaged: 2025-04-11 09:54:24 UTC; sasha
+Author: Sasha D. Hafner [aut, cre] (<https://orcid.org/0000-0003-0955-0327>),
+  Jon Katz [aut],
+  Jerome Sueur [aut] (seewave package author (code from Fourier transform
+    used in monitoR)),
+  Thierry Aubin [aut] (seewave package author (code from Fourier
+    transform used in monitoR)),
+  Caroline Simonis [aut] (seewave package author (code from Fourier
+    transform used in monitoR)),
+  Uwe Ligges [aut] (tuneR package author (code from readMP3() used in
+    monitoR)),
+  Therese Donovan [ctb] (creative direction and database design support)
 Repository: CRAN
-Date/Publication: 2018-02-14 16:38:52 UTC
+Date/Publication: 2025-04-11 12:10:02 UTC

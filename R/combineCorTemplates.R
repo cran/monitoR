@@ -1,20 +1,19 @@
 # For combining correlation template lists together
-# Modified: 2013 JUNE 13
+# Modified 2018 JULY 03 JEK
 
-combineCorTemplates <-
-function(...) {
-
+combineCorTemplates <- function(...) {
    temps <- list(...)
+   if(is.list(temps[[1]])) temps <- temps[[1]] 
    x <- NULL
 
    for(i in 1:length(temps)) {
       x <- c(x, temps[[i]]@templates)
    }
 
-   templates <- new('corTemplateList', templates=x)
+   templates <- new('corTemplateList', templates = x)
 
    while(any(dups <- duplicated(names(templates@templates)))) {
-     warning("Found identical template names: ", paste(names(templates@templates)[dups], collapse=", "), ". Adding suffix.")   
+     warning("Found identical template names: ", paste(names(templates@templates)[dups], collapse = ", "), ". Adding suffix.")   
      names(templates@templates)[dups] <- paste0(names(templates@templates)[dups], ".2")
    }
 

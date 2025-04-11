@@ -14,7 +14,7 @@ library(monitoR)
 #for(ff in df) load(ff)
 
 ## ----eval = FALSE----------------------------------------------
-#  library(monitoR)
+# library(monitoR)
 
 ## --------------------------------------------------------------
 data(survey)
@@ -24,8 +24,8 @@ survey
 viewSpec(survey)
 
 ## ----eval = FALSE----------------------------------------------
-#  setWavPlayer("play")
-#  play(survey)
+# setWavPlayer("play")
+# play(survey)
 
 ## --------------------------------------------------------------
 data(btnw)
@@ -72,7 +72,7 @@ ctemps <- combineCorTemplates(wct1, wct2, oct1, oct2)
 ctemps
 
 ## ----eval = FALSE----------------------------------------------
-#  plot(ctemps)
+# plot(ctemps)
 
 ## --------------------------------------------------------------
 cscores <- corMatch(survey.fp, ctemps)

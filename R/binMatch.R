@@ -1,5 +1,4 @@
 # For calculating scores for binary template matching 
-# Modified: 2018 Feb 13
 
 binMatch <-
 function(
@@ -12,7 +11,7 @@ function(
   rec.tz = NA,              # Time zone setting for recorders 
   write.wav = FALSE,        # Set to TRUE to allow creation of file of survey in working directory
   report.amp = FALSE,       # If TRUE, reports the on and off amplitudes (takes 3x as long)
-  quiet=FALSE,            # TRUE will suppress calls to cat()
+  quiet = FALSE,            # TRUE will suppress calls to cat()
   ...                     # Additional arguments to the spectro function
 ) {
 
@@ -48,7 +47,7 @@ function(
      date.time.info <- regmatches(survey.short, regexpr('[0-9]{4}-[0-9]{2}-[0-9]{2}[ _][0-9]{6}[ _][A-Z0-9]{1,7}', survey.short))
      date.time.info <- gsub("_", " ", date.time.info)
      if(length(date.time.info) == 1 && nchar(date.time.info) %in% 19:23)
-       file.time <- as.POSIXct(substr(date.time.info, start = 1, stop = 17), tz = substr(date.time.info, start = 19, stop = length(date.time.info)), format = '%Y-%m-%d %H%M%S') 
+       file.time <- as.POSIXct(substr(date.time.info, start = 1, stop = 17), tz = substr(date.time.info, start = 19, stop = nchar(date.time.info)), format = '%Y-%m-%d %H%M%S') 
      else {
        warning('time.source was set to \"filename\" but file name does not have date and time info, so using \"fileinfo\" instead')
        file.time <- file.info(survey)$mtime
@@ -98,13 +97,13 @@ function(
 
     # Throw error if step sizes don't match
     if(!isTRUE(all.equal(template@t.step, t.step, tolerance = t.step/1E4))) {
-      stop('For ', i,' time step doesn\'t match survey time step: ', t.step, ' != ', template@t.step, '. Adjust one or the other and try again.')
+      stop('For ', i,' template time step doesn\'t match survey time step (', signif(t.step, 5), ' != ', signif(template@t.step, 5), ') but they must to use this function. See help file and also changeSampRate().')
       ##pt.on[, 't'] <- round(pt.on[, 't']*template@t.step/t.step)
       ##pt.off[, 't'] <- round(pt.off[, 't']*template@t.step/t.step)
       ##if(warn) warning('For ', i,', time step doesn\'t match survey time step: ', t.step, ' != ', template@t.step)
     }
-    if(!isTRUE(all.equal(template@frq.step, frq.step, tolerance = frq.step/1E4))) {
-      stop(i, ' frequency step does\'t match survey frequency step, ', frq.step, ' != ', template@frq.step, '. Adjust one or the other and try again.')
+    if(!isTRUE(all.equal(template@frq.step, frq.step, tolerance = frq.step/1E6))) {
+      stop('For ', i,' template frequency step doesn\'t match survey frequency step (', signif(frq.step, 5), ' != ', signif(template@frq.step, 5), ') but they must to use this function. See help file.')
       ##pt.on[, 'frq'] <- round(pt.on[, 'frq']*template@frq.step/frq.step)
       ##pt.off[, 'frq'] <- round(pt.off[, 'frq']*template@frq.step/frq.step)
       ##if(warn) warning('For ', i,', frequency step does\'t match survey frequency step, ', frq.step, ' != ', template@frq.step)
